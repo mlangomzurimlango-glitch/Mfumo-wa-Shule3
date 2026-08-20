@@ -306,6 +306,7 @@
             justify-content: center;
             font-weight: 600;
             font-size: 16px;
+            cursor: pointer;
         }
 
         /* ─── CONTENT ─── */
@@ -906,7 +907,7 @@
             <form id="loginForm" onsubmit="return handleLogin(event)">
                 <div class="mb-3">
                     <label class="form-label fw-semibold">Jina la Mtumiaji / Namba ya Mwanafunzi</label>
-                    <input type="text" class="form-control" id="loginUsername" placeholder="Weka jina au namba" value="admin" required />
+                    <input type="text" class="form-control" id="loginUsername" placeholder="Weka jina au namba" value="" required />
                 </div>
                 <div class="mb-3">
                     <label class="form-label fw-semibold">Neno la Siri</label>
@@ -994,7 +995,14 @@
             </div>
             <div class="user-info">
                 <span class="d-none d-sm-inline text-muted small" id="userRoleBadge">Msimamizi</span>
-                <div class="avatar" id="userAvatar">M</div>
+                <div class="dropdown">
+                    <div class="avatar" id="userAvatar" data-bs-toggle="dropdown" aria-expanded="false">M</div>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="#" onclick="openChangePasswordModal()"><i class="bi bi-key me-2"></i>Badili Neno Siri</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="#" onclick="handleLogout()"><i class="bi bi-box-arrow-right me-2"></i>Toka</a></li>
+                    </ul>
+                </div>
             </div>
         </header>
 
@@ -1453,6 +1461,38 @@
         </div>
     </div>
 
+    <!-- CHANGE PASSWORD MODAL -->
+    <div class="modal fade" id="changePasswordModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title fw-bold"><i class="bi bi-key me-2"></i>Badili Neno Siri</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="changePasswordForm">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Neno Siri la Sasa</label>
+                            <input type="password" class="form-control" id="currentPassword" placeholder="Weka neno siri la sasa" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Neno Siri Mpya</label>
+                            <input type="password" class="form-control" id="newPassword" placeholder="Weka neno siri mpya" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Thibitisha Neno Siri Mpya</label>
+                            <input type="password" class="form-control" id="confirmPassword" placeholder="Weka tena neno siri mpya" required />
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Ghairi</button>
+                    <button class="btn btn-primary btn-sm" onclick="saveNewPassword()">Hifadhi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- ════════════════════════════════════════════════════════ -->
     <!-- SCRIPTS -->
     <!-- ════════════════════════════════════════════════════════ -->
@@ -1645,13 +1685,13 @@
             role));
             const hint = document.getElementById('loginHint');
             if (role === 'admin') {
-                document.getElementById('loginUsername').value = 'admin';
-                document.getElementById('loginPassword').value = 'admin123';
+                document.getElementById('loginUsername').value = '';
+                document.getElementById('loginPassword').value = '';
                 hint.textContent = 'Mfano: admin / admin123';
             } else {
-                document.getElementById('loginUsername').value = 'S001';
-                document.getElementById('loginPassword').value = '1234';
-                hint.textContent = 'Mzazi: ingiza namba ya mwanafunzi (S001) na neno siri lake.';
+                document.getElementById('loginUsername').value = '';
+                document.getElementById('loginPassword').value = '';
+                hint.textContent = 'Mzazi: ingiza namba ya mwanafunzi () na neno siri lake.';
             }
         }
 
@@ -2481,6 +2521,53 @@
                         </div>
                     `).join('');
             }
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // CHANGE PASSWORD FUNCTIONS
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function openChangePasswordModal() {
+            document.getElementById('currentPassword').value = '';
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmPassword').value = '';
+            new bootstrap.Modal(document.getElementById('changePasswordModal')).show();
+        }
+
+        function saveNewPassword() {
+            const current = document.getElementById('currentPassword').value;
+            const newPwd = document.getElementById('newPassword').value;
+            const confirm = document.getElementById('confirmPassword').value;
+
+            if (!current || !newPwd || !confirm) {
+                alert('Tafadhali jaza sehemu zote.');
+                return;
+            }
+            if (newPwd !== confirm) {
+                alert('Neno siri mpya na uthibitisho hazifanani.');
+                return;
+            }
+
+            let users = getUsers();
+            const adminUser = users.find(u => u.role === 'admin');
+            if (!adminUser) {
+                alert('Msimamizi hajapatikana.');
+                return;
+            }
+            if (adminUser.password !== current) {
+                alert('Neno siri la sasa si sahihi.');
+                return;
+            }
+
+            adminUser.password = newPwd;
+            setUsers(users);
+
+            if (currentUser && currentUser.role === 'admin') {
+                currentUser.password = newPwd;
+            }
+
+            bootstrap.Modal.getInstance(document.getElementById('changePasswordModal')).hide();
+            alert('✅ Neno siri limebadilishwa kikamilifu!');
         }
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
