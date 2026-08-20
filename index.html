@@ -47,7 +47,6 @@
             border-radius: 10px;
         }
 
-        /* ─── LOGIN ─── */
         .login-wrapper {
             min-height: 100vh;
             display: flex;
@@ -144,7 +143,6 @@
             background: #f8fafc;
         }
 
-        /* ─── SIDEBAR ─── */
         .sidebar {
             position: fixed;
             top: 0;
@@ -251,14 +249,12 @@
             text-align: center;
         }
 
-        /* ─── MAIN CONTENT ─── */
         .main-content {
             margin-left: var(--sidebar-width);
             min-height: 100vh;
             transition: margin-left 0.3s ease;
         }
 
-        /* ─── HEADER ─── */
         .header {
             height: var(--header-height);
             background: #fff;
@@ -306,15 +302,33 @@
             justify-content: center;
             font-weight: 600;
             font-size: 16px;
+        }
+
+        .change-pwd-btn {
+            background: none;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 6px 14px;
+            font-size: 13px;
+            color: #475569;
+            transition: 0.2s;
             cursor: pointer;
         }
 
-        /* ─── CONTENT ─── */
+        .change-pwd-btn:hover {
+            background: var(--primary-light);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .change-pwd-btn i {
+            margin-right: 5px;
+        }
+
         .content {
             padding: 28px 32px;
         }
 
-        /* ─── CARDS ─── */
         .stat-card {
             background: #fff;
             border-radius: var(--radius);
@@ -369,7 +383,6 @@
             font-weight: 500;
         }
 
-        /* ─── TABLES ─── */
         .table-wrap {
             background: #fff;
             border-radius: var(--radius);
@@ -430,7 +443,6 @@
             font-size: 12px;
         }
 
-        /* ─── BADGE ─── */
         .badge-status {
             padding: 4px 12px;
             border-radius: 20px;
@@ -472,7 +484,6 @@
             color: #991b1b;
         }
 
-        /* ─── TABS ─── */
         .profile-tabs .nav-link {
             color: #64748b;
             font-weight: 500;
@@ -490,7 +501,6 @@
             background: #f1f5f9;
         }
 
-        /* ─── MODAL ─── */
         .modal-content {
             border-radius: 16px;
             border: none;
@@ -525,7 +535,6 @@
             box-shadow: 0 0 0 4px rgba(26, 86, 219, 0.1);
         }
 
-        /* ─── PARENT PORTAL ─── */
         .parent-child-card {
             background: #fff;
             border-radius: var(--radius);
@@ -549,7 +558,6 @@
             margin: 0 auto 12px;
         }
 
-        /* ─── RESPONSIVE ─── */
         @media (max-width: 992px) {
             .sidebar {
                 transform: translateX(-100%);
@@ -807,7 +815,6 @@
             font-size: 16px;
         }
 
-        /* ─── PARENT DASHBOARD EXTRA ─── */
         .parent-extra-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -875,7 +882,6 @@
             margin-top: 2px;
         }
 
-        /* ─── NEW PARENT LAYOUT ─── */
         .parent-stacked {
             display: flex;
             flex-direction: column;
@@ -888,6 +894,38 @@
 
         .parent-stacked .section-card .table-wrap {
             margin-bottom: 0;
+        }
+
+        .table-bordered td,
+        .table-bordered th {
+            border: 1px solid #e2e8f0;
+        }
+
+        /* For exam subjects grid */
+        .subject-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        .subject-grid .form-group {
+            margin-bottom: 0;
+        }
+        .subject-grid label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #475569;
+        }
+        .subject-grid input {
+            border-radius: 8px;
+            border: 1.5px solid #e2e8f0;
+            padding: 6px 10px;
+            font-size: 13px;
+            width: 100%;
+        }
+        .subject-grid input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(26, 86, 219, 0.1);
+            outline: none;
         }
     </style>
 </head>
@@ -907,7 +945,7 @@
             <form id="loginForm" onsubmit="return handleLogin(event)">
                 <div class="mb-3">
                     <label class="form-label fw-semibold">Jina la Mtumiaji / Namba ya Mwanafunzi</label>
-                    <input type="text" class="form-control" id="loginUsername" placeholder="Weka jina au namba" value="" required />
+                    <input type="text" class="form-control" id="loginUsername" placeholder="Weka jina au namba" value="admin" required />
                 </div>
                 <div class="mb-3">
                     <label class="form-label fw-semibold">Neno la Siri</label>
@@ -995,14 +1033,10 @@
             </div>
             <div class="user-info">
                 <span class="d-none d-sm-inline text-muted small" id="userRoleBadge">Msimamizi</span>
-                <div class="dropdown">
-                    <div class="avatar" id="userAvatar" data-bs-toggle="dropdown" aria-expanded="false">M</div>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="#" onclick="openChangePasswordModal()"><i class="bi bi-key me-2"></i>Badili Neno Siri</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item text-danger" href="#" onclick="handleLogout()"><i class="bi bi-box-arrow-right me-2"></i>Toka</a></li>
-                    </ul>
-                </div>
+                <button class="change-pwd-btn" onclick="openChangePasswordModal()">
+                    <i class="bi bi-key"></i> Badilisha Neno
+                </button>
+                <div class="avatar" id="userAvatar">M</div>
             </div>
         </header>
 
@@ -1177,14 +1211,33 @@
                         </div>
                         <span class="text-muted small" id="examCount">0 rekodi</span>
                     </div>
-                    <table class="table">
-                        <thead>
-                            <tr><th>Jina</th><th>Darasa</th><th>Math</th><th>Eng</th><th>Kisw</th><th>Sci</th><th>SS</th><th>RE</th><th>Jumla</th><th>Wastani</th><th>Div</th><th>Nafasi</th><th class="text-end">Vitendo</th></tr>
-                        </thead>
-                        <tbody id="examTableBody">
-                            <!-- rendered by JS -->
-                        </tbody>
-                    </table>
+                    <div style="overflow-x:auto;">
+                        <table class="table" style="min-width:1200px;">
+                            <thead>
+                                <tr>
+                                    <th>Jina</th>
+                                    <th>Darasa</th>
+                                    <th>Math</th>
+                                    <th>Eng</th>
+                                    <th>Kisw</th>
+                                    <th>Sci</th>
+                                    <th>SS</th>
+                                    <th>Civ</th>
+                                    <th>RE</th>
+                                    <th>Voc</th>
+                                    <th>ICT</th>
+                                    <th>Jumla</th>
+                                    <th>Wastani</th>
+                                    <th>Div</th>
+                                    <th>Nafasi</th>
+                                    <th class="text-end">Vitendo</th>
+                                </tr>
+                            </thead>
+                            <tbody id="examTableBody">
+                                <!-- rendered by JS -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </section>
 
@@ -1274,7 +1327,7 @@
     <!-- MODALS -->
     <!-- ════════════════════════════════════════════════════════ -->
 
-    <!-- STUDENT MODAL (with editable ID) -->
+    <!-- STUDENT MODAL -->
     <div class="modal fade" id="studentModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -1339,9 +1392,9 @@
         </div>
     </div>
 
-    <!-- EXAM MODAL -->
+    <!-- EXAM MODAL (with 10 subjects) -->
     <div class="modal fade" id="examModal" tabindex="-1">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h6 class="modal-title fw-bold"><i class="bi bi-plus-circle me-2"></i><span id="examModalTitle">Ongeza Matokeo</span></h6>
@@ -1358,15 +1411,47 @@
                             <label class="form-label fw-semibold small">Darasa</label>
                             <input type="text" class="form-control" id="eClass" readonly style="background:#f1f5f9;" />
                         </div>
-                        <div class="row g-2">
-                            <div class="col-4"><label class="form-label fw-semibold small">Math</label><input type="number" class="form-control" id="eMath" placeholder="0-100" /></div>
-                            <div class="col-4"><label class="form-label fw-semibold small">Eng</label><input type="number" class="form-control" id="eEng" placeholder="0-100" /></div>
-                            <div class="col-4"><label class="form-label fw-semibold small">Kisw</label><input type="number" class="form-control" id="eKisw" placeholder="0-100" /></div>
-                        </div>
-                        <div class="row g-2 mt-1">
-                            <div class="col-4"><label class="form-label fw-semibold small">Sci</label><input type="number" class="form-control" id="eScience" placeholder="0-100" /></div>
-                            <div class="col-4"><label class="form-label fw-semibold small">SS</label><input type="number" class="form-control" id="eSS" placeholder="0-100" /></div>
-                            <div class="col-4"><label class="form-label fw-semibold small">RE</label><input type="number" class="form-control" id="eRE" placeholder="0-100" /></div>
+                        <div class="subject-grid">
+                            <div class="form-group">
+                                <label>Mathematics</label>
+                                <input type="number" class="form-control" id="eMath" placeholder="0-100" min="0" max="100" />
+                            </div>
+                            <div class="form-group">
+                                <label>English Language</label>
+                                <input type="number" class="form-control" id="eEng" placeholder="0-100" min="0" max="100" />
+                            </div>
+                            <div class="form-group">
+                                <label>Kiswahili</label>
+                                <input type="number" class="form-control" id="eKisw" placeholder="0-100" min="0" max="100" />
+                            </div>
+                            <div class="form-group">
+                                <label>Science</label>
+                                <input type="number" class="form-control" id="eScience" placeholder="0-100" min="0" max="100" />
+                            </div>
+                            <div class="form-group">
+                                <label>Social Studies</label>
+                                <input type="number" class="form-control" id="eSS" placeholder="0-100" min="0" max="100" />
+                            </div>
+                            <div class="form-group">
+                                <label>Civics</label>
+                                <input type="number" class="form-control" id="eCivics" placeholder="0-100" min="0" max="100" />
+                            </div>
+                            <div class="form-group">
+                                <label>Religious Studies</label>
+                                <input type="number" class="form-control" id="eRE" placeholder="0-100" min="0" max="100" />
+                            </div>
+                            <div class="form-group">
+                                <label>Vocational / Life Skills</label>
+                                <input type="number" class="form-control" id="eVoc" placeholder="0-100" min="0" max="100" />
+                            </div>
+                            <div class="form-group">
+                                <label>ICT / Computer Studies</label>
+                                <input type="number" class="form-control" id="eICT" placeholder="0-100" min="0" max="100" />
+                            </div>
+                            <div class="form-group">
+                                <label>Additional (optional)</label>
+                                <input type="number" class="form-control" id="eExtra" placeholder="0-100" min="0" max="100" />
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -1466,28 +1551,90 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h6 class="modal-title fw-bold"><i class="bi bi-key me-2"></i>Badili Neno Siri</h6>
+                    <h6 class="modal-title fw-bold"><i class="bi bi-key-fill me-2"></i>Badilisha Neno la Siri</h6>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <form id="changePasswordForm">
                         <div class="mb-3">
-                            <label class="form-label fw-semibold small">Neno Siri la Sasa</label>
-                            <input type="password" class="form-control" id="currentPassword" placeholder="Weka neno siri la sasa" required />
+                            <label class="form-label fw-semibold small">Jina la Mtumiaji (mpya)</label>
+                            <input type="text" class="form-control" id="newUsername" placeholder="Weka jina mpya la mtumiaji" required />
                         </div>
                         <div class="mb-3">
-                            <label class="form-label fw-semibold small">Neno Siri Mpya</label>
+                            <label class="form-label fw-semibold small">Jina Kamili (mpya)</label>
+                            <input type="text" class="form-control" id="newFullName" placeholder="Weka jina kamili mpya" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Neno la Siri (mpya)</label>
                             <input type="password" class="form-control" id="newPassword" placeholder="Weka neno siri mpya" required />
                         </div>
                         <div class="mb-3">
-                            <label class="form-label fw-semibold small">Thibitisha Neno Siri Mpya</label>
-                            <input type="password" class="form-control" id="confirmPassword" placeholder="Weka tena neno siri mpya" required />
+                            <label class="form-label fw-semibold small">Neno la Siri (la sasa)</label>
+                            <input type="password" class="form-control" id="currentPassword" placeholder="Weka neno siri la sasa" required />
+                            <small class="text-muted">Inahitajika kwa uthibitishaji.</small>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Ghairi</button>
-                    <button class="btn btn-primary btn-sm" onclick="saveNewPassword()">Hifadhi</button>
+                    <button class="btn btn-primary btn-sm" onclick="savePasswordChange()">Hifadhi Mabadiliko</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- VIEW SUBJECTS MODAL (PARENT) -->
+    <div class="modal fade" id="viewSubjectsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header" style="background: var(--primary-light);">
+                    <h6 class="modal-title fw-bold">
+                        <i class="bi bi-book-fill me-2" style="color: var(--primary);"></i>
+                        <span id="viewSubjectsTitle">Masomo ya Mwanafunzi</span>
+                    </h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 id="viewStudentName" class="fw-bold mb-0">Jina la Mwanafunzi</h6>
+                                <span id="viewStudentClass" class="badge bg-soft-primary text-primary-custom">Darasa</span>
+                            </div>
+                            <div class="text-end">
+                                <span class="text-muted small">Jumla: <strong id="viewTotalMarks">0</strong></span><br>
+                                <span class="text-muted small">Wastani: <strong id="viewAverage">0%</strong></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-wrap" style="border: none; box-shadow: none; padding: 0;">
+                        <table class="table table-bordered" id="subjectsTable">
+                            <thead style="background: #f8fafc;">
+                                <tr>
+                                    <th>Somo</th>
+                                    <th class="text-center">Alama</th>
+                                    <th class="text-center">Daraja</th>
+                                </tr>
+                            </thead>
+                            <tbody id="subjectsTableBody">
+                                <!-- rendered by JS -->
+                            </tbody>
+                            <tfoot style="background: #f8fafc; font-weight: 600;">
+                                <tr>
+                                    <td><strong>Jumla</strong></td>
+                                    <td class="text-center" id="footerTotal">0</td>
+                                    <td class="text-center" id="footerDivision">-</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Wastani</strong></td>
+                                    <td class="text-center" colspan="2" id="footerAverage">0%</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Funga</button>
                 </div>
             </div>
         </div>
@@ -1516,27 +1663,21 @@
         }
 
         function getStudents() { return getData('students', []); }
-
         function setStudents(v) { setData('students', v); }
 
         function getAttendance() { return getData('attendance', []); }
-
         function setAttendance(v) { setData('attendance', v); }
 
         function getExams() { return getData('exams', []); }
-
         function setExams(v) { setData('exams', v); }
 
         function getFees() { return getData('fees', []); }
-
         function setFees(v) { setData('fees', v); }
 
         function getAnnouncements() { return getData('announcements', []); }
-
         function setAnnouncements(v) { setData('announcements', v); }
 
         function getUsers() { return getData('users', []); }
-
         function setUsers(v) { setData('users', v); }
 
         function generateId(prefix) {
@@ -1555,7 +1696,6 @@
             return 'TSh ' + amount.toLocaleString();
         }
 
-        // ─── New attendance helper ───
         function getAttendancePercentage(studentId) {
             const recs = getAttendance().filter(a => a.studentId === studentId);
             if (recs.length === 0) return 0;
@@ -1563,7 +1703,6 @@
             return Math.round(total / recs.length);
         }
 
-        // ─── Get today's average attendance ───
         function getTodayAttendanceAvg() {
             const today = getToday();
             const atts = getAttendance().filter(a => a.tarehe === today);
@@ -1578,6 +1717,14 @@
             if (avg >= 60) return { label: 'III', badge: 'yellow' };
             if (avg >= 50) return { label: 'IV', badge: 'purple' };
             return { label: 'V', badge: 'red' };
+        }
+
+        function getGrade(marks) {
+            if (marks >= 80) return { label: 'A', badge: 'green' };
+            if (marks >= 70) return { label: 'B', badge: 'blue' };
+            if (marks >= 60) return { label: 'C', badge: 'yellow' };
+            if (marks >= 50) return { label: 'D', badge: 'purple' };
+            return { label: 'F', badge: 'red' };
         }
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -1625,15 +1772,15 @@
             if (getExams().length === 0) {
                 setExams([
                     { id: 'E1', studentId: 'S004', darasa: 'Darasa 1', math: 85, eng: 82, kisw: 80, science: 88, ss: 84,
-                        re: 81 },
+                        civics: 70, re: 81, voc: 75, ict: 90, extra: 0 },
                     { id: 'E2', studentId: 'S002', darasa: 'Darasa 2', math: 70, eng: 65, kisw: 80, science: 72, ss: 68,
-                        re: 75 },
+                        civics: 60, re: 75, voc: 70, ict: 80, extra: 0 },
                     { id: 'E3', studentId: 'S001', darasa: 'Darasa 1', math: 55, eng: 60, kisw: 58, science: 62, ss: 57,
-                        re: 61 },
+                        civics: 55, re: 61, voc: 50, ict: 60, extra: 0 },
                     { id: 'E4', studentId: 'S003', darasa: 'Darasa 3', math: 50, eng: 55, kisw: 48, science: 52, ss: 56,
-                        re: 49 },
+                        civics: 45, re: 49, voc: 55, ict: 50, extra: 0 },
                     { id: 'E5', studentId: 'S005', darasa: 'Darasa 2', math: 40, eng: 45, kisw: 38, science: 42, ss: 39,
-                        re: 35 },
+                        civics: 40, re: 35, voc: 45, ict: 40, extra: 0 },
                 ]);
             }
             if (getFees().length === 0) {
@@ -1685,13 +1832,13 @@
             role));
             const hint = document.getElementById('loginHint');
             if (role === 'admin') {
-                document.getElementById('loginUsername').value = '';
-                document.getElementById('loginPassword').value = '';
+                document.getElementById('loginUsername').value = 'admin';
+                document.getElementById('loginPassword').value = 'admin123';
                 hint.textContent = 'Mfano: admin / admin123';
             } else {
-                document.getElementById('loginUsername').value = '';
-                document.getElementById('loginPassword').value = '';
-                hint.textContent = 'Mzazi: ingiza namba ya mwanafunzi () na neno siri lake.';
+                document.getElementById('loginUsername').value = 'S001';
+                document.getElementById('loginPassword').value = '1234';
+                hint.textContent = 'Mzazi: ingiza namba ya mwanafunzi (S001) na neno siri lake.';
             }
         }
 
@@ -1740,6 +1887,8 @@
             document.getElementById('dashboardUserName').textContent = isAdmin ? 'Msimamizi' : currentUser.name || 'Mzazi';
             document.getElementById('sidebarRoleLabel').textContent = isAdmin ? 'v2.0 • Msimamizi' : 'v2.0 • Mzazi';
 
+            document.querySelector('.change-pwd-btn').style.display = isAdmin ? 'inline-block' : 'none';
+
             document.querySelectorAll('.sidebar .nav-link').forEach(link => {
                 const page = link.dataset.page;
                 if (!isAdmin && (page === 'students' || page === 'attendance' || page === 'exams' ||
@@ -1757,6 +1906,122 @@
             }
 
             renderAll();
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // CHANGE PASSWORD FUNCTIONS
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function openChangePasswordModal() {
+            const users = getUsers();
+            const admin = users.find(u => u.role === 'admin');
+            if (admin) {
+                document.getElementById('newUsername').value = admin.username;
+                document.getElementById('newFullName').value = admin.fullName || '';
+            }
+            document.getElementById('newPassword').value = '';
+            document.getElementById('currentPassword').value = '';
+            new bootstrap.Modal(document.getElementById('changePasswordModal')).show();
+        }
+
+        function savePasswordChange() {
+            const newUsername = document.getElementById('newUsername').value.trim();
+            const newFullName = document.getElementById('newFullName').value.trim();
+            const newPassword = document.getElementById('newPassword').value.trim();
+            const currentPassword = document.getElementById('currentPassword').value.trim();
+
+            if (!newUsername || !newPassword || !currentPassword) {
+                alert('Tafadhali jaza sehemu zote muhimu.');
+                return;
+            }
+
+            let users = getUsers();
+            const adminIndex = users.findIndex(u => u.role === 'admin');
+            if (adminIndex === -1) {
+                alert('Admin account not found.');
+                return;
+            }
+
+            const admin = users[adminIndex];
+
+            if (admin.password !== currentPassword) {
+                alert('❌ Neno la siri la sasa si sahihi. Jaribu tena.');
+                return;
+            }
+
+            users[adminIndex] = {
+                ...admin,
+                username: newUsername,
+                fullName: newFullName || admin.fullName,
+                password: newPassword
+            };
+
+            setUsers(users);
+
+            if (currentUser && currentUser.role === 'admin') {
+                currentUser.name = newFullName || admin.fullName;
+                document.getElementById('dashboardUserName').textContent = currentUser.name;
+                document.getElementById('sidebarRoleLabel').textContent = 'v2.0 • Msimamizi';
+            }
+
+            bootstrap.Modal.getInstance(document.getElementById('changePasswordModal')).hide();
+            alert('✅ Taarifa zimebadilishwa! Tafadhali ingia tena kwa kutumia jina na neno siri mpya.');
+            handleLogout();
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // VIEW SUBJECTS (PARENT)
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function viewSubjects(studentId) {
+            const student = getStudentById(studentId);
+            if (!student) {
+                alert('Mwanafunzi huyo hapatikani.');
+                return;
+            }
+
+            const exam = getExams().find(e => e.studentId === studentId);
+            if (!exam) {
+                alert('Hakuna matokeo ya mtihani kwa mwanafunzi huyu.');
+                return;
+            }
+
+            document.getElementById('viewSubjectsTitle').textContent = `Masomo ya ${student.jina}`;
+            document.getElementById('viewStudentName').textContent = student.jina;
+            document.getElementById('viewStudentClass').textContent = student.darasa;
+
+            const subjects = [
+                { name: 'Mathematics', value: exam.math || 0 },
+                { name: 'English Language', value: exam.eng || 0 },
+                { name: 'Kiswahili', value: exam.kisw || 0 },
+                { name: 'Science', value: exam.science || 0 },
+                { name: 'Social Studies', value: exam.ss || 0 },
+                { name: 'Civics', value: exam.civics || 0 },
+                { name: 'Religious Studies', value: exam.re || 0 },
+                { name: 'Vocational / Life Skills', value: exam.voc || 0 },
+                { name: 'ICT / Computer Studies', value: exam.ict || 0 },
+                { name: 'Additional', value: exam.extra || 0 }
+            ];
+
+            const total = subjects.reduce((sum, s) => sum + s.value, 0);
+            const average = Math.round(total / 10);
+            const div = calculateDivision(average);
+
+            const tbody = document.getElementById('subjectsTableBody');
+            tbody.innerHTML = subjects.map(s => {
+                const grade = getGrade(s.value);
+                return `<tr>
+                    <td>${s.name}</td>
+                    <td class="text-center fw-semibold">${s.value}</td>
+                    <td class="text-center"><span class="badge-status ${grade.badge}">${grade.label}</span></td>
+                </tr>`;
+            }).join('');
+
+            document.getElementById('footerTotal').textContent = total;
+            document.getElementById('footerAverage').textContent = `${average}%`;
+            document.getElementById('footerDivision').innerHTML = `<span class="badge-status ${div.badge}">${div.label}</span>`;
+
+            new bootstrap.Modal(document.getElementById('viewSubjectsModal')).show();
         }
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -1810,7 +2075,7 @@
         }
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        // RENDER: DASHBOARD (Admin)
+        // RENDER: DASHBOARD
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
         function renderDashboard() {
@@ -1845,9 +2110,9 @@
 
             const examData = exams.map(e => {
                 const s = getStudentById(e.studentId);
-                const total = (e.math || 0) + (e.eng || 0) + (e.kisw || 0) + (e.science || 0) + (e.ss || 0) + (e.re ||
-                0);
-                const avg = Math.round(total / 6);
+                const total = (e.math || 0) + (e.eng || 0) + (e.kisw || 0) + (e.science || 0) + (e.ss || 0) +
+                    (e.civics || 0) + (e.re || 0) + (e.voc || 0) + (e.ict || 0) + (e.extra || 0);
+                const avg = Math.round(total / 10);
                 const div = calculateDivision(avg);
                 return { name: s ? s.jina : 'Mwanafunzi', darasa: s ? s.darasa : '', avg, division: div.label,
                     badgeClass: div.badge };
@@ -1865,7 +2130,7 @@
         }
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        // RENDER: STUDENTS (Admin)
+        // RENDER: STUDENTS
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
         function renderStudents() {
@@ -1908,14 +2173,13 @@
             }).join('');
         }
 
-        // ─── Open student modal with editable ID ───
         function openStudentModal(data) {
             const isEdit = !!data;
             document.getElementById('studentModalTitle').textContent = isEdit ? 'Hariri Mwanafunzi' : 'Mwongeze Mwanafunzi';
             const s = data || { id: '', jina: '', jinsia: 'M', tarehe: '', darasa: 'Darasa 1', mzazi: '', simu: '',
                 anwani: '', password: '1234' };
-            document.getElementById('editStudentId').value = s.id;  // hidden field for tracking
-            document.getElementById('sId').value = s.id;            // visible ID field
+            document.getElementById('editStudentId').value = s.id;
+            document.getElementById('sId').value = s.id;
             document.getElementById('sName').value = s.jina;
             document.getElementById('sGender').value = s.jinsia;
             document.getElementById('sDob').value = s.tarehe;
@@ -1932,9 +2196,8 @@
             if (s) openStudentModal(s);
         }
 
-        // ─── Save student with custom ID ───
         function saveStudent() {
-            const oldId = document.getElementById('editStudentId').value;   // hidden (if editing)
+            const oldId = document.getElementById('editStudentId').value;
             const newId = document.getElementById('sId').value.trim();
             const jina = document.getElementById('sName').value.trim();
             const jinsia = document.getElementById('sGender').value;
@@ -1950,7 +2213,6 @@
 
             let students = getStudents();
 
-            // Check duplicate ID (if new or changed)
             const duplicate = students.find(s => s.id === newId && s.id !== oldId);
             if (duplicate) {
                 alert(`ID "${newId}" tayari inatumiwa na mwanafunzi mwingine. Tafadhali chagua ID nyingine.`);
@@ -1958,30 +2220,23 @@
             }
 
             if (oldId) {
-                // Editing existing student
                 const idx = students.findIndex(s => s.id === oldId);
                 if (idx > -1) {
                     students[idx] = { ...students[idx], id: newId, jina, jinsia, tarehe, darasa, mzazi, simu, anwani,
                         password };
                 }
-                // Also update related data (attendance, exams, fees) that reference this student id
-                // Attendance
                 let att = getAttendance();
                 att = att.map(a => a.studentId === oldId ? { ...a, studentId: newId } : a);
                 setAttendance(att);
-                // Exams
                 let exams = getExams();
                 exams = exams.map(e => e.studentId === oldId ? { ...e, studentId: newId } : e);
                 setExams(exams);
-                // Fees
                 let fees = getFees();
                 fees = fees.map(f => f.studentId === oldId ? { ...f, studentId: newId } : f);
                 setFees(fees);
             } else {
-                // New student
                 const newStudent = { id: newId, jina, jinsia, tarehe, darasa, mzazi, simu, anwani, password };
                 students.push(newStudent);
-                // Optionally create a default fee record
                 let fees = getFees();
                 fees.push({ id: generateId('F'), studentId: newId, feeRequired: 500000, amountPaid: 0, paymentDate: '',
                     reference: '' });
@@ -1992,7 +2247,6 @@
             bootstrap.Modal.getInstance(document.getElementById('studentModal')).hide();
             renderStudents();
             renderDashboard();
-            // Also refresh any parent view if needed
             if (currentPage === 'parent') renderParentView();
         }
 
@@ -2011,7 +2265,7 @@
         }
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        // RENDER: ATTENDANCE (Admin)
+        // RENDER: ATTENDANCE
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
         function renderAttendance() {
@@ -2075,7 +2329,7 @@
         }
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        // RENDER: EXAMS (Admin)
+        // RENDER: EXAMS (with 10 subjects)
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
         function renderExams() {
@@ -2085,9 +2339,9 @@
 
             const enriched = exams.map(e => {
                 const s = getStudentById(e.studentId);
-                const total = (e.math || 0) + (e.eng || 0) + (e.kisw || 0) + (e.science || 0) + (e.ss || 0) + (e.re ||
-                0);
-                const avg = Math.round(total / 6);
+                const total = (e.math || 0) + (e.eng || 0) + (e.kisw || 0) + (e.science || 0) + (e.ss || 0) +
+                    (e.civics || 0) + (e.re || 0) + (e.voc || 0) + (e.ict || 0) + (e.extra || 0);
+                const avg = Math.round(total / 10);
                 const div = calculateDivision(avg);
                 return { ...e, studentName: s ? s.jina : 'Mwanafunzi', total, avg, division: div.label,
                     badgeClass: div.badge };
@@ -2101,7 +2355,7 @@
             const tbody = document.getElementById('examTableBody');
             if (enriched.length === 0) {
                 tbody.innerHTML =
-                `<tr><td colspan="13" class="text-muted text-center">Hakuna matokeo</td></tr>`;
+                `<tr><td colspan="16" class="text-muted text-center">Hakuna matokeo</td></tr>`;
                 return;
             }
 
@@ -2114,7 +2368,10 @@
                             <td>${e.kisw}</td>
                             <td>${e.science}</td>
                             <td>${e.ss}</td>
+                            <td>${e.civics || 0}</td>
                             <td>${e.re}</td>
+                            <td>${e.voc || 0}</td>
+                            <td>${e.ict || 0}</td>
                             <td><strong>${e.total}</strong></td>
                             <td>${e.avg}</td>
                             <td><span class="badge-status ${e.badgeClass}">${e.division}</span></td>
@@ -2137,14 +2394,19 @@
         function openExamModal(data) {
             const isEdit = !!data;
             document.getElementById('examModalTitle').textContent = isEdit ? 'Hariri Matokeo' : 'Ongeza Matokeo';
-            const e = data || { id: '', studentId: '', darasa: '', math: 0, eng: 0, kisw: 0, science: 0, ss: 0, re: 0 };
+            const e = data || { id: '', studentId: '', darasa: '', math: 0, eng: 0, kisw: 0, science: 0, ss: 0,
+                civics: 0, re: 0, voc: 0, ict: 0, extra: 0 };
             document.getElementById('editExamId').value = e.id;
             document.getElementById('eMath').value = e.math || 0;
             document.getElementById('eEng').value = e.eng || 0;
             document.getElementById('eKisw').value = e.kisw || 0;
             document.getElementById('eScience').value = e.science || 0;
             document.getElementById('eSS').value = e.ss || 0;
+            document.getElementById('eCivics').value = e.civics || 0;
             document.getElementById('eRE').value = e.re || 0;
+            document.getElementById('eVoc').value = e.voc || 0;
+            document.getElementById('eICT').value = e.ict || 0;
+            document.getElementById('eExtra').value = e.extra || 0;
             populateStudentSelect('eStudent', (sel) => {
                 sel.value = e.studentId || '';
                 const s = getStudentById(sel.value);
@@ -2171,12 +2433,17 @@
             const kisw = parseFloat(document.getElementById('eKisw').value) || 0;
             const science = parseFloat(document.getElementById('eScience').value) || 0;
             const ss = parseFloat(document.getElementById('eSS').value) || 0;
+            const civics = parseFloat(document.getElementById('eCivics').value) || 0;
             const re = parseFloat(document.getElementById('eRE').value) || 0;
+            const voc = parseFloat(document.getElementById('eVoc').value) || 0;
+            const ict = parseFloat(document.getElementById('eICT').value) || 0;
+            const extra = parseFloat(document.getElementById('eExtra').value) || 0;
 
             if (!studentId) return alert('Tafadhali chagua mwanafunzi.');
 
             let exams = getExams();
-            const obj = { id: id || generateId('E'), studentId, darasa, math, eng, kisw, science, ss, re };
+            const obj = { id: id || generateId('E'), studentId, darasa, math, eng, kisw, science, ss, civics, re, voc, ict,
+                extra };
             if (id) {
                 const idx = exams.findIndex(x => x.id === id);
                 if (idx > -1) exams[idx] = obj;
@@ -2198,7 +2465,7 @@
         }
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        // RENDER: FEES (Admin)
+        // RENDER: FEES
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
         function renderFees() {
@@ -2313,7 +2580,7 @@
         }
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        // RENDER: ANNOUNCEMENTS (Admin)
+        // RENDER: ANNOUNCEMENTS
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
         function renderAnnouncements() {
@@ -2407,75 +2674,86 @@
             if (!student) {
                 container.innerHTML =
                     '<div class="alert alert-info">Hakuna mwanafunzi aliyepatikana. Tafadhali wasiliana na msimamizi.</div>';
+                return;
+            }
+
+            const pct = getAttendancePercentage(student.id);
+            const exam = getExams().find(e => e.studentId === student.id);
+            const fee = getFees().find(f => f.studentId === student.id);
+
+            let examHtml = 'Hajafanya mtihani';
+            let totalMarks = 0;
+            let avgMarks = 0;
+            let divLabel = '-';
+            let divBadge = '';
+
+            if (exam) {
+                totalMarks = (exam.math || 0) + (exam.eng || 0) + (exam.kisw || 0) + (exam.science || 0) + (exam.ss || 0) +
+                    (exam.civics || 0) + (exam.re || 0) + (exam.voc || 0) + (exam.ict || 0) + (exam.extra || 0);
+                avgMarks = Math.round(totalMarks / 10);
+                const div = calculateDivision(avgMarks);
+                divLabel = div.label;
+                divBadge = div.badge;
+                examHtml =
+                    `Jumla: ${totalMarks}, Wastani: ${avgMarks}, Division: <span class="badge-status ${div.badge}">${div.label}</span>`;
+            }
+
+            let feeHtml = '';
+            if (fee) {
+                const balance = fee.feeRequired - fee.amountPaid;
+                feeHtml = `
+                    <div class="fee-summary-box">
+                        <p><strong>💰 School Fees</strong></p>
+                        <p><span class="total-fee">Inadaiwa: ${formatCurrency(fee.feeRequired)}</span></p>
+                        <p><span class="paid-fee">Imelipwa: ${formatCurrency(fee.amountPaid)}</span></p>
+                        <p><span class="${balance === 0 ? 'balance-fee zero' : 'balance-fee'}">Salio: ${formatCurrency(balance)}</span></p>
+                    </div>
+                `;
             } else {
-                const pct = getAttendancePercentage(student.id);
-                const exam = getExams().find(e => e.studentId === student.id);
-                const fee = getFees().find(f => f.studentId === student.id);
+                feeHtml = '<p class="text-muted">Hakuna rekodi ya ada.</p>';
+            }
 
-                let examHtml = 'Hajafanya mtihani';
-                if (exam) {
-                    const total = (exam.math || 0) + (exam.eng || 0) + (exam.kisw || 0) + (exam.science || 0) + (exam.ss || 0) +
-                        (exam.re || 0);
-                    const avg = Math.round(total / 6);
-                    const div = calculateDivision(avg);
-                    examHtml =
-                        `Jumla: ${total}, Wastani: ${avg}, Division: <span class="badge-status ${div.badge}">${div.label}</span>`;
-                }
-
-                let feeHtml = '';
-                if (fee) {
-                    const balance = fee.feeRequired - fee.amountPaid;
-                    feeHtml = `
-                            <div class="fee-summary-box">
-                                <p><strong>💰 School Fees</strong></p>
-                                <p><span class="total-fee">Inadaiwa: ${formatCurrency(fee.feeRequired)}</span></p>
-                                <p><span class="paid-fee">Imelipwa: ${formatCurrency(fee.amountPaid)}</span></p>
-                                <p><span class="${balance === 0 ? 'balance-fee zero' : 'balance-fee'}">Salio: ${formatCurrency(balance)}</span></p>
-                            </div>
-                        `;
-                } else {
-                    feeHtml = '<p class="text-muted">Hakuna rekodi ya ada.</p>';
-                }
-
-                container.innerHTML = `
-                        <div class="parent-child-card">
-                            <div class="avatar-lg">${student.jina.charAt(0)}</div>
-                            <h6 class="fw-bold">${student.jina}</h6>
-                            <span class="badge bg-soft-primary text-primary-custom">${student.darasa}</span>
-                            <hr />
-                            <div class="text-start small">
-                                <div class="d-flex justify-content-between"><span>Mzazi:</span><span class="fw-semibold">${student.mzazi}</span></div>
-                                <div class="d-flex justify-content-between"><span>Simu:</span><span class="fw-semibold">${student.simu}</span></div>
-                                <div class="d-flex justify-content-between"><span>Anwani:</span><span class="fw-semibold">${student.anwani || '-'}</span></div>
-                            </div>
-                            <hr />
-                            <div class="row g-2 text-start">
-                                <div class="col-4">
-                                    <div class="stat-card text-center p-2">
-                                        <div class="number text-primary" style="font-size:20px;">${pct}%</div>
-                                        <div class="label" style="font-size:11px;">Mahudhurio</div>
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="stat-card text-center p-2">
-                                        <div class="number text-success" style="font-size:20px;">${exam ? Math.round(((exam.math||0)+(exam.eng||0)+(exam.kisw||0)+(exam.science||0)+(exam.ss||0)+(exam.re||0))/6) : '-'}</div>
-                                        <div class="label" style="font-size:11px;">Wastani</div>
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="stat-card text-center p-2">
-                                        <div class="number text-warning" style="font-size:20px;">${fee ? formatCurrency(fee.feeRequired - fee.amountPaid) : '-'}</div>
-                                        <div class="label" style="font-size:11px;">Salio la Ada</div>
-                                    </div>
-                                </div>
-                            </div>
-                            ${feeHtml}
-                            <div class="mt-2 text-start small">
-                                <strong>📝 Matokeo:</strong> ${examHtml}
+            container.innerHTML = `
+                <div class="parent-child-card">
+                    <div class="avatar-lg">${student.jina.charAt(0)}</div>
+                    <h6 class="fw-bold">${student.jina}</h6>
+                    <span class="badge bg-soft-primary text-primary-custom">${student.darasa}</span>
+                    <hr />
+                    <div class="text-start small">
+                        <div class="d-flex justify-content-between"><span>Mzazi:</span><span class="fw-semibold">${student.mzazi}</span></div>
+                        <div class="d-flex justify-content-between"><span>Simu:</span><span class="fw-semibold">${student.simu}</span></div>
+                        <div class="d-flex justify-content-between"><span>Anwani:</span><span class="fw-semibold">${student.anwani || '-'}</span></div>
+                    </div>
+                    <hr />
+                    <div class="row g-2 text-start">
+                        <div class="col-4">
+                            <div class="stat-card text-center p-2">
+                                <div class="number text-primary" style="font-size:20px;">${pct}%</div>
+                                <div class="label" style="font-size:11px;">Mahudhurio</div>
                             </div>
                         </div>
-                    `;
-            }
+                        <div class="col-4">
+                            <div class="stat-card text-center p-2">
+                                <div class="number text-success" style="font-size:20px;">${exam ? avgMarks : '-'}</div>
+                                <div class="label" style="font-size:11px;">Wastani</div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="stat-card text-center p-2">
+                                <div class="number text-warning" style="font-size:20px;">${fee ? formatCurrency(fee.feeRequired - fee.amountPaid) : '-'}</div>
+                                <div class="label" style="font-size:11px;">Salio la Ada</div>
+                            </div>
+                        </div>
+                    </div>
+                    ${feeHtml}
+                    <div class="mt-2 text-start small">
+                        <strong>📝 Matokeo:</strong> ${examHtml}
+                    </div>
+                    <button class="btn btn-outline-primary btn-sm mt-2 w-100" onclick="viewSubjects('${student.id}')">
+                        <i class="bi bi-eye me-1"></i> Angalia Masomo Yote
+                    </button>
+                </div>
+            `;
 
             // Announcements
             const annContainer = document.getElementById('parentAnnouncements');
@@ -2500,9 +2778,9 @@
             const exams = getExams();
             const examData = exams.map(e => {
                 const s = getStudentById(e.studentId);
-                const total = (e.math || 0) + (e.eng || 0) + (e.kisw || 0) + (e.science || 0) + (e.ss || 0) + (e.re ||
-                0);
-                const avg = Math.round(total / 6);
+                const total = (e.math || 0) + (e.eng || 0) + (e.kisw || 0) + (e.science || 0) + (e.ss || 0) +
+                    (e.civics || 0) + (e.re || 0) + (e.voc || 0) + (e.ict || 0) + (e.extra || 0);
+                const avg = Math.round(total / 10);
                 const div = calculateDivision(avg);
                 return { name: s ? s.jina : 'Mwanafunzi', avg, division: div.label, badgeClass: div.badge };
             });
@@ -2521,53 +2799,6 @@
                         </div>
                     `).join('');
             }
-        }
-
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        // CHANGE PASSWORD FUNCTIONS
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-        function openChangePasswordModal() {
-            document.getElementById('currentPassword').value = '';
-            document.getElementById('newPassword').value = '';
-            document.getElementById('confirmPassword').value = '';
-            new bootstrap.Modal(document.getElementById('changePasswordModal')).show();
-        }
-
-        function saveNewPassword() {
-            const current = document.getElementById('currentPassword').value;
-            const newPwd = document.getElementById('newPassword').value;
-            const confirm = document.getElementById('confirmPassword').value;
-
-            if (!current || !newPwd || !confirm) {
-                alert('Tafadhali jaza sehemu zote.');
-                return;
-            }
-            if (newPwd !== confirm) {
-                alert('Neno siri mpya na uthibitisho hazifanani.');
-                return;
-            }
-
-            let users = getUsers();
-            const adminUser = users.find(u => u.role === 'admin');
-            if (!adminUser) {
-                alert('Msimamizi hajapatikana.');
-                return;
-            }
-            if (adminUser.password !== current) {
-                alert('Neno siri la sasa si sahihi.');
-                return;
-            }
-
-            adminUser.password = newPwd;
-            setUsers(users);
-
-            if (currentUser && currentUser.role === 'admin') {
-                currentUser.password = newPwd;
-            }
-
-            bootstrap.Modal.getInstance(document.getElementById('changePasswordModal')).hide();
-            alert('✅ Neno siri limebadilishwa kikamilifu!');
         }
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
