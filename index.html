@@ -949,7 +949,7 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label fw-semibold">Neno la Siri</label>
-                    <input type="password" class="form-control" id="" placeholder="Weka neno siri" value="" required />
+                    <input type="password" class="form-control" id="loginPassword" placeholder="Weka neno siri" value="admin123" required />
                 </div>
 
                 <div class="mb-4 role-toggle d-flex gap-2 justify-content-center">
@@ -960,7 +960,7 @@
                 <button type="submit" class="btn btn-primary">🔐 Ingia</button>
 
                 <div class="text-center mt-3">
-                  
+                    
                 </div>
             </form>
         </div>
@@ -1833,11 +1833,11 @@
             const hint = document.getElementById('loginHint');
             if (role === 'admin') {
                 document.getElementById('loginUsername').value = 'admin';
-                document.getElementById('loginPassword').value = 'admin123';
+                document.getElementById('loginPassword').value = '';
                 hint.textContent = 'Mfano: admin / admin123';
             } else {
-                document.getElementById('loginUsername').value = 'S001';
-                document.getElementById('loginPassword').value = '1234';
+                document.getElementById('loginUsername').value = '';
+                document.getElementById('loginPassword').value = '';
                 hint.textContent = 'Mzazi: ingiza namba ya mwanafunzi (S001) na neno siri lake.';
             }
         }
@@ -1855,7 +1855,7 @@
                     showApp();
                     return;
                 }
-                alert('❌ Jina au neno siri si sahihi. Jaribu admin / admin123');
+                alert('❌ Jina au neno siri si sahihi,mara 4 mwisho, tutafunga hii account');
             } else {
                 const students = getStudents();
                 const found = students.find(s => s.id === username && s.password === password);
@@ -1864,7 +1864,7 @@
                     showApp();
                     return;
                 }
-                alert('❌ Namba ya mwanafunzi au neno siri si sahihi.');
+                alert('❌ Namba ya mwanafunzi au neno siri si sahihi rudia mara 3 mwisho,tuna ripoti unachezea account.');
             }
             return false;
         }
