@@ -1871,11 +1871,26 @@
             btn.innerHTML = '⏳ Inaingia...';
 
             auth.signInWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    const user = userCredential.user;
-                    // Retrieve user data from Firestore (collection "users")
-                    return db.collection('users').doc(user.uid).get();
-                })
+                ..then((userCredential) => {
+    const user = userCredential.user;
+    return db.collection('users').where('email', '==', user.email).get();
+})
+.then((querySnapshot) => {
+    if (!querySnapshot.empty) {
+        const doc = querySnapshot.docs[0];
+        const userData = doc.data();
+        currentUser = {
+            role: userData.role || 'admin',
+            name: userData.fullName || 'Msimamizi',
+            uid: userData.uid || auth.currentUser.uid,
+            email: auth.currentUser.email
+        };
+        showApp();
+    } else {
+        alert('❌ Hakuna taarifa za mtumiaji. Wasiliana na msimamizi.');
+        auth.signOut();
+    }
+})
                 .then((doc) => {
                     if (doc.exists) {
                         const userData = doc.data();
