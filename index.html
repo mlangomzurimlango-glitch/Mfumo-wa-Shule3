@@ -932,9 +932,7 @@
 </head>
 <body>
 
-    <!-- ════════════════════════════════════════════════════════ -->
     <!-- LOGIN -->
-    <!-- ════════════════════════════════════════════════════════ -->
     <div id="loginPage" class="login-wrapper">
         <div class="login-card">
             <div class="logo">
@@ -967,14 +965,10 @@
         </div>
     </div>
 
-    <!-- ════════════════════════════════════════════════════════ -->
     <!-- SIDEBAR OVERLAY -->
-    <!-- ════════════════════════════════════════════════════════ -->
     <div id="sidebarOverlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
 
-    <!-- ════════════════════════════════════════════════════════ -->
     <!-- SIDEBAR -->
-    <!-- ════════════════════════════════════════════════════════ -->
     <aside class="sidebar" id="sidebar">
         <div class="brand">
             <i class="bi bi-mortarboard-fill"></i>
@@ -1019,9 +1013,7 @@
         </div>
     </aside>
 
-    <!-- ════════════════════════════════════════════════════════ -->
     <!-- MAIN CONTENT -->
-    <!-- ════════════════════════════════════════════════════════ -->
     <div class="main-content" id="mainContent">
 
         <!-- HEADER -->
@@ -1044,7 +1036,7 @@
         <!-- CONTENT -->
         <div class="content">
 
-            <!-- ─── DASHBOARD ─── -->
+            <!-- DASHBOARD -->
             <section id="page-dashboard" class="page-section active">
                 <div class="mb-4">
                     <h5 class="fw-bold">Karibu tena, <span id="dashboardUserName">Msimamizi</span> 👋</h5>
@@ -1111,7 +1103,7 @@
                 </div>
             </section>
 
-            <!-- ─── STUDENTS ─── -->
+            <!-- STUDENTS -->
             <section id="page-students" class="page-section">
                 <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
                     <h5 class="fw-bold mb-0"><i class="bi bi-people-fill me-2 text-primary-custom"></i>Orodha ya Wanafunzi</h5>
@@ -1144,7 +1136,7 @@
                 </div>
             </section>
 
-            <!-- ─── ATTENDANCE ─── -->
+            <!-- ATTENDANCE -->
             <section id="page-attendance" class="page-section">
                 <h5 class="fw-bold mb-4"><i class="bi bi-calendar-check-fill me-2 text-primary-custom"></i>Mahudhurio</h5>
 
@@ -1190,7 +1182,7 @@
                 </div>
             </section>
 
-            <!-- ─── EXAMS ─── -->
+            <!-- EXAMS -->
             <section id="page-exams" class="page-section">
                 <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
                     <h5 class="fw-bold mb-0"><i class="bi bi-bar-chart-fill me-2 text-primary-custom"></i>Matokeo ya Mtihani</h5>
@@ -1242,7 +1234,7 @@
                 </div>
             </section>
 
-            <!-- ─── FEES ─── -->
+            <!-- FEES -->
             <section id="page-fees" class="page-section">
                 <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
                     <h5 class="fw-bold mb-0"><i class="bi bi-coin-fill me-2 text-primary-custom"></i>Ada na Malipo</h5>
@@ -1276,7 +1268,7 @@
                 </div>
             </section>
 
-            <!-- ─── ANNOUNCEMENTS ─── -->
+            <!-- ANNOUNCEMENTS -->
             <section id="page-announcements" class="page-section">
                 <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
                     <h5 class="fw-bold mb-0"><i class="bi bi-megaphone-fill me-2 text-primary-custom"></i>Matangazo</h5>
@@ -1288,7 +1280,7 @@
                 <div id="announceList"></div>
             </section>
 
-            <!-- ─── PARENT PORTAL ─── -->
+            <!-- PARENT PORTAL -->
             <section id="page-parent" class="page-section">
                 <div class="mb-4">
                     <h5 class="fw-bold"><i class="bi bi-person-badge-fill me-2 text-primary-custom"></i>Taarifa za Mwanafunzi Wangu</h5>
@@ -1324,10 +1316,7 @@
         </div><!-- /content -->
     </div><!-- /main-content -->
 
-    <!-- ════════════════════════════════════════════════════════ -->
     <!-- MODALS -->
-    <!-- ════════════════════════════════════════════════════════ -->
-
     <!-- STUDENT MODAL -->
     <div class="modal fade" id="studentModal" tabindex="-1">
         <div class="modal-dialog">
@@ -1641,9 +1630,7 @@
         </div>
     </div>
 
-    <!-- ════════════════════════════════════════════════════════ -->
     <!-- SCRIPTS -->
-    <!-- ════════════════════════════════════════════════════════ -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js">
     </script>
 
@@ -1870,41 +1857,36 @@
             btn.disabled = true;
             btn.innerHTML = '⏳ Inaingia...';
 
+            // 🔥 LOGIN WITH FIREBASE AUTH
             auth.signInWithEmailAndPassword(email, password)
-                ..then((userCredential) => {
-    const user = userCredential.user;
-    return db.collection('users').where('email', '==', user.email).get();
-})
-.then((querySnapshot) => {
-    if (!querySnapshot.empty) {
-        const doc = querySnapshot.docs[0];
-        const userData = doc.data();
-        currentUser = {
-            role: userData.role || 'admin',
-            name: userData.fullName || 'Msimamizi',
-            uid: userData.uid || auth.currentUser.uid,
-            email: auth.currentUser.email
-        };
-        showApp();
-    } else {
-        alert('❌ Hakuna taarifa za mtumiaji. Wasiliana na msimamizi.');
-        auth.signOut();
-    }
-})
-                .then((doc) => {
-                    if (doc.exists) {
-                        const userData = doc.data();
-                        currentUser = {
-                            role: userData.role || 'admin',
-                            name: userData.fullName || 'Msimamizi',
-                            uid: userData.uid || auth.currentUser.uid,
-                            email: auth.currentUser.email
-                        };
-                        showApp();
-                    } else {
-                        alert('❌ Hakuna taarifa za mtumiaji. Wasiliana na msimamizi.');
-                        auth.signOut();
-                    }
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    // 🔥 SEARCH USER IN FIRESTORE BY EMAIL (NOT UID)
+                    return db.collection('users').where('email', '==', user.email).get()
+                        .then((querySnapshot) => {
+                            if (!querySnapshot.empty) {
+                                // If user exists in Firestore, use that data
+                                const doc = querySnapshot.docs[0];
+                                const userData = doc.data();
+                                currentUser = {
+                                    role: userData.role || 'admin',
+                                    name: userData.fullName || 'Msimamizi',
+                                    uid: userData.uid || user.uid,
+                                    email: user.email
+                                };
+                                showApp();
+                            } else {
+                                // 🔥 IF NO USER IN FIRESTORE, USE DEFAULTS
+                                console.warn('Hakuna data ya mtumiaji Firestore, tunatumia defaults');
+                                currentUser = {
+                                    role: 'admin',
+                                    name: 'Msimamizi',
+                                    uid: user.uid,
+                                    email: user.email
+                                };
+                                showApp();
+                            }
+                        });
                 })
                 .catch((error) => {
                     alert('❌ Kuingia kumeshindwa: ' + error.message);
