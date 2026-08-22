@@ -13,7 +13,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
 
     <style>
-        /* (style zote zipo sawa, zimebaki kama zilivyo) */
         :root {
             --primary: #1a56db;
             --primary-dark: #1a3a8a;
@@ -795,10 +794,6 @@
             border-bottom: 2px solid #e2e8f0;
             padding-bottom: 16px;
             margin-bottom: 16px;
-        }
-
-        .receipt-box .receipt-header h6 {
-            font-weight: 700;
         }
 
         .receipt-box .receipt-row {
@@ -1754,6 +1749,9 @@
                         simu: '0712345681', anwani: 'Dar', password: '1122' },
                     { id: 'S005', jina: 'John Peter', jinsia: 'M', tarehe: '2009-07-25', darasa: 'Darasa 2', mzazi: 'Peter',
                         simu: '0712345682', anwani: 'Mwanza', password: '3344' },
+                    // 🔥 Diana Mkumbo ameongezwa hapa
+                    { id: 'S006', jina: 'Diana Mkumbo', jinsia: 'F', tarehe: '2010-04-10', darasa: 'Darasa 1',
+                        mzazi: 'Mkumbo', simu: '0712345683', anwani: 'Dar', password: '4321' }
                 ]);
             }
             if (getAttendance().length === 0) {
@@ -1764,6 +1762,8 @@
                     { id: 'A3', studentId: 'S003', tarehe: today, asilimia: 0 },
                     { id: 'A4', studentId: 'S004', tarehe: today, asilimia: 100 },
                     { id: 'A5', studentId: 'S005', tarehe: today, asilimia: 0 },
+                    // Tunaweza kuongeza attendance ya Diana pia
+                    { id: 'A6', studentId: 'S006', tarehe: today, asilimia: 100 }
                 ]);
             } else {
                 let att = getAttendance();
@@ -1791,6 +1791,9 @@
                         civics: 45, re: 49, voc: 55, ict: 50, extra: 0 },
                     { id: 'E5', studentId: 'S005', darasa: 'Darasa 2', math: 40, eng: 45, kisw: 38, science: 42, ss: 39,
                         civics: 40, re: 35, voc: 45, ict: 40, extra: 0 },
+                    // 🔥 Matokeo ya Diana
+                    { id: 'E6', studentId: 'S006', darasa: 'Darasa 1', math: 90, eng: 88, kisw: 85, science: 92, ss: 87,
+                        civics: 80, re: 86, voc: 82, ict: 95, extra: 0 }
                 ]);
             }
             if (getFees().length === 0) {
@@ -1805,6 +1808,9 @@
                         reference: 'INV-004' },
                     { id: 'F5', studentId: 'S005', feeRequired: 500000, amountPaid: 100000, paymentDate: '2026-08-01',
                         reference: 'INV-005' },
+                    // 🔥 Ada ya Diana
+                    { id: 'F6', studentId: 'S006', feeRequired: 500000, amountPaid: 200000, paymentDate: '2026-08-20',
+                        reference: 'INV-006' }
                 ]);
             }
             if (getAnnouncements().length === 0) {
@@ -1889,12 +1895,12 @@
                                     };
                                     showApp();
                                 }
+                                btn.disabled = false;
+                                btn.innerHTML = '🔐 Ingia';
                             });
                     })
                     .catch((error) => {
                         alert('❌ Kuingia kwa Admin kumeshindwa: ' + error.message);
-                    })
-                    .finally(() => {
                         btn.disabled = false;
                         btn.innerHTML = '🔐 Ingia';
                     });
@@ -1909,13 +1915,11 @@
                         name: found.mzazi || found.jina
                     };
                     showApp();
-                    btn.disabled = false;
-                    btn.innerHTML = '🔐 Ingia';
                 } else {
                     alert('❌ Namba ya mwanafunzi au neno siri si sahihi.');
-                    btn.disabled = false;
-                    btn.innerHTML = '🔐 Ingia';
                 }
+                btn.disabled = false;
+                btn.innerHTML = '🔐 Ingia';
             }
 
             return false;
@@ -2251,6 +2255,10 @@
             if (s) openStudentModal(s);
         }
 
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // SAVE STUDENT (IMEREPEHEWA - inaunda mtihani na ada kiotomatiki)
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
         function saveStudent() {
             const oldId = document.getElementById('editStudentId').value;
             const newId = document.getElementById('sId').value.trim();
@@ -2292,10 +2300,34 @@
             } else {
                 const newStudent = { id: newId, jina, jinsia, tarehe, darasa, mzazi, simu, anwani, password };
                 students.push(newStudent);
+
+                // 🔥 ONGEZA HAPA: Unda rekodi ya mtihani kwa mwanafunzi mpya
+                let exams = getExams();
+                // Hakikisha hakuna rekodi ya mtihani iliyopo kwa ID hii
+                if (!exams.some(e => e.studentId === newId)) {
+                    exams.push({
+                        id: generateId('E'),
+                        studentId: newId,
+                        darasa: darasa,
+                        math: 0, eng: 0, kisw: 0, science: 0, ss: 0,
+                        civics: 0, re: 0, voc: 0, ict: 0, extra: 0
+                    });
+                    setExams(exams);
+                }
+
+                // Unda rekodi ya ada ikiwa haipo
                 let fees = getFees();
-                fees.push({ id: generateId('F'), studentId: newId, feeRequired: 500000, amountPaid: 0, paymentDate: '',
-                    reference: '' });
-                setFees(fees);
+                if (!fees.some(f => f.studentId === newId)) {
+                    fees.push({
+                        id: generateId('F'),
+                        studentId: newId,
+                        feeRequired: 500000,
+                        amountPaid: 0,
+                        paymentDate: '',
+                        reference: ''
+                    });
+                    setFees(fees);
+                }
             }
 
             setStudents(students);
@@ -2906,7 +2938,2951 @@
 
         console.log('🏫 Mfumo wa Shule umeanza vizuri!');
         console.log('📌 Admin: ingia kwa barua pepe na neno siri la Firebase.');
-        console.log('📌 Mzazi: ingia kwa ID ya mwanafunzi (S001-S005) na neno siri lake (1234, 5678, ...)');
+        console.log('📌 Mzazi: ingia kwa ID ya mwanafunzi (S001-S006) na neno siri lake (1234, 5678, ...)');
+    </script>
+
+</body>
+</html><!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🏫 Mfumo wa Shule</title>
+
+    <!-- Bootstrap 5 + Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+
+    <style>
+        :root {
+            --primary: #1a56db;
+            --primary-dark: #1a3a8a;
+            --primary-light: #e8edf9;
+            --sidebar-width: 260px;
+            --header-height: 64px;
+            --radius: 12px;
+            --shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f4f6fa;
+            color: #1e293b;
+            overflow-x: hidden;
+        }
+
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        .login-wrapper {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #eef2ff 0%, #dbeafe 100%);
+            padding: 20px;
+        }
+
+        .login-card {
+            background: #fff;
+            border-radius: 24px;
+            padding: 40px 36px;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(26, 86, 219, 0.15);
+            transition: transform 0.3s ease;
+        }
+
+        .login-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .login-card .logo {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .login-card .logo i {
+            font-size: 48px;
+            color: var(--primary);
+            background: var(--primary-light);
+            padding: 16px;
+            border-radius: 16px;
+        }
+
+        .login-card .logo h4 {
+            margin-top: 12px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .login-card .logo small {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .login-card .form-control {
+            border-radius: 10px;
+            padding: 12px 16px;
+            border: 1.5px solid #e2e8f0;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .login-card .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(26, 86, 219, 0.12);
+        }
+
+        .login-card .btn-primary {
+            background: var(--primary);
+            border: none;
+            border-radius: 10px;
+            padding: 12px;
+            font-weight: 600;
+            font-size: 15px;
+            transition: 0.2s;
+            width: 100%;
+        }
+
+        .login-card .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(26, 86, 219, 0.3);
+        }
+
+        .login-card .role-toggle .btn {
+            border-radius: 10px;
+            padding: 8px 18px;
+            font-size: 13px;
+            font-weight: 500;
+            border: 1.5px solid #e2e8f0;
+            transition: 0.2s;
+        }
+
+        .login-card .role-toggle .btn.active {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        .login-card .role-toggle .btn:not(.active):hover {
+            background: #f8fafc;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: var(--sidebar-width);
+            background: #0f172a;
+            color: #e2e8f0;
+            padding: 0;
+            overflow-y: auto;
+            z-index: 1050;
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar .brand {
+            padding: 20px 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sidebar .brand i {
+            font-size: 28px;
+            color: #60a5fa;
+        }
+
+        .sidebar .brand span {
+            font-weight: 700;
+            font-size: 18px;
+            color: #fff;
+            letter-spacing: -0.3px;
+        }
+
+        .sidebar .brand small {
+            display: block;
+            font-size: 11px;
+            color: #94a3b8;
+            font-weight: 400;
+        }
+
+        .sidebar .nav {
+            flex: 1;
+            padding: 16px 12px;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .sidebar .nav .nav-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #64748b;
+            padding: 12px 12px 6px;
+            font-weight: 600;
+        }
+
+        .sidebar .nav .nav-link {
+            color: #cbd5e1;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+
+        .sidebar .nav .nav-link i {
+            font-size: 20px;
+            width: 24px;
+            text-align: center;
+            color: #64748b;
+            transition: 0.2s;
+        }
+
+        .sidebar .nav .nav-link:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: #fff;
+        }
+
+        .sidebar .nav .nav-link:hover i {
+            color: #60a5fa;
+        }
+
+        .sidebar .nav .nav-link.active {
+            background: rgba(96, 165, 250, 0.15);
+            color: #60a5fa;
+        }
+
+        .sidebar .nav .nav-link.active i {
+            color: #60a5fa;
+        }
+
+        .sidebar .footer {
+            padding: 16px 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            font-size: 12px;
+            color: #64748b;
+            text-align: center;
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            transition: margin-left 0.3s ease;
+        }
+
+        .header {
+            height: var(--header-height);
+            background: #fff;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1040;
+            backdrop-filter: blur(8px);
+            background: rgba(255, 255, 255, 0.92);
+        }
+
+        .header .toggle-sidebar {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #475569;
+            display: none;
+            cursor: pointer;
+        }
+
+        .header .page-title {
+            font-weight: 600;
+            font-size: 18px;
+            color: #0f172a;
+        }
+
+        .header .user-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .header .user-info .avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: var(--primary-light);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .change-pwd-btn {
+            background: none;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 6px 14px;
+            font-size: 13px;
+            color: #475569;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+
+        .change-pwd-btn:hover {
+            background: var(--primary-light);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .change-pwd-btn i {
+            margin-right: 5px;
+        }
+
+        .content {
+            padding: 28px 32px;
+        }
+
+        .stat-card {
+            background: #fff;
+            border-radius: var(--radius);
+            padding: 20px 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid #f1f5f9;
+            transition: 0.25s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+        }
+
+        .stat-card .icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .stat-card .icon.blue {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+        .stat-card .icon.green {
+            background: #d1fae5;
+            color: #059669;
+        }
+        .stat-card .icon.purple {
+            background: #ede9fe;
+            color: #7c3aed;
+        }
+        .stat-card .icon.orange {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .stat-card .number {
+            font-size: 26px;
+            font-weight: 700;
+            color: #0f172a;
+            line-height: 1.2;
+        }
+
+        .stat-card .label {
+            font-size: 14px;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .table-wrap {
+            background: #fff;
+            border-radius: var(--radius);
+            padding: 20px 0;
+            box-shadow: var(--shadow);
+            border: 1px solid #f1f5f9;
+            overflow-x: auto;
+        }
+
+        .table-wrap .table-header {
+            padding: 0 24px 16px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .table-wrap .table-header h6 {
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .table-wrap table {
+            margin-bottom: 0;
+            font-size: 14px;
+        }
+
+        .table-wrap table th {
+            font-weight: 600;
+            color: #475569;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 12px 16px;
+            background: #f8fafc;
+        }
+
+        .table-wrap table td {
+            padding: 12px 16px;
+            vertical-align: middle;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .table-wrap table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .table-wrap table .avatar-sm {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--primary-light);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .badge-status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 12px;
+            display: inline-block;
+        }
+
+        .badge-status.paid {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        .badge-status.pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        .badge-status.overdue {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        .badge-status.green {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        .badge-status.blue {
+            background: #dbeafe;
+            color: #1a56db;
+        }
+        .badge-status.yellow {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        .badge-status.purple {
+            background: #ede9fe;
+            color: #7c3aed;
+        }
+        .badge-status.red {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .profile-tabs .nav-link {
+            color: #64748b;
+            font-weight: 500;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+        }
+
+        .profile-tabs .nav-link.active {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .profile-tabs .nav-link:hover:not(.active) {
+            background: #f1f5f9;
+        }
+
+        .modal-content {
+            border-radius: 16px;
+            border: none;
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.12);
+        }
+
+        .modal-header {
+            border-bottom: 1px solid #f1f5f9;
+            padding: 20px 24px;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-footer {
+            border-top: 1px solid #f1f5f9;
+            padding: 16px 24px;
+        }
+
+        .modal .form-control,
+        .modal .form-select {
+            border-radius: 10px;
+            border: 1.5px solid #e2e8f0;
+            padding: 10px 14px;
+            font-size: 14px;
+        }
+
+        .modal .form-control:focus,
+        .modal .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(26, 86, 219, 0.1);
+        }
+
+        .parent-child-card {
+            background: #fff;
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid #f1f5f9;
+            text-align: center;
+        }
+
+        .parent-child-card .avatar-lg {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--primary-light);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: 700;
+            margin: 0 auto 12px;
+        }
+
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .header .toggle-sidebar {
+                display: block;
+            }
+
+            .content {
+                padding: 20px 16px;
+            }
+
+            .header {
+                padding: 0 16px;
+            }
+
+            .stat-card .number {
+                font-size: 20px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .login-card {
+                padding: 28px 20px;
+            }
+
+            .table-wrap .table-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .header .page-title {
+                font-size: 15px;
+            }
+        }
+
+        .bg-soft-primary {
+            background: var(--primary-light);
+        }
+        .text-primary-custom {
+            color: var(--primary);
+        }
+        .cursor-pointer {
+            cursor: pointer;
+        }
+        .transition {
+            transition: 0.2s;
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 1045;
+        }
+
+        .sidebar-overlay.active {
+            display: block;
+        }
+
+        .page-section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .page-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fee-summary-box {
+            background: #f8fafc;
+            border-radius: var(--radius);
+            padding: 16px 20px;
+            border: 1px solid #e2e8f0;
+            margin-top: 12px;
+        }
+
+        .fee-summary-box p {
+            margin-bottom: 4px;
+            font-size: 14px;
+        }
+
+        .fee-summary-box .total-fee {
+            font-weight: 700;
+            color: #0f172a;
+        }
+        .fee-summary-box .paid-fee {
+            font-weight: 600;
+            color: #059669;
+        }
+        .fee-summary-box .balance-fee {
+            font-weight: 700;
+            color: #dc2626;
+        }
+        .fee-summary-box .balance-fee.zero {
+            color: #059669;
+        }
+
+        .fee-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .fee-stat-card {
+            background: #f8fafc;
+            padding: 16px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #e9ecef;
+        }
+
+        .fee-stat-card h4 {
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 4px;
+        }
+
+        .fee-stat-card .num {
+            font-size: 22px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .fee-stat-card .num.positive {
+            color: #059669;
+        }
+        .fee-stat-card .num.negative {
+            color: #dc2626;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .stat-grid .stat-item {
+            background: #f8fafc;
+            padding: 14px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #e9ecef;
+        }
+        .stat-grid .stat-item h4 {
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 2px;
+        }
+        .stat-grid .stat-item .num {
+            font-size: 22px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+        .stat-grid .stat-item small {
+            font-size: 12px;
+            color: #94a3b8;
+            display: block;
+        }
+
+        .attendance-select {
+            padding: 4px 8px;
+            border-radius: 6px;
+            border: 1.5px solid #e2e8f0;
+            font-size: 13px;
+            background: #fff;
+            min-width: 80px;
+        }
+
+        .announcement-item {
+            border: 1px solid #e2e8f0;
+            border-radius: var(--radius);
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            background: #fafbfc;
+            transition: 0.2s;
+        }
+
+        .announcement-item:hover {
+            border-color: var(--primary);
+            background: #f8faff;
+        }
+
+        .announcement-item .ann-title {
+            font-weight: 600;
+            font-size: 15px;
+            color: #0f172a;
+        }
+
+        .announcement-item .ann-meta {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        .announcement-item .ann-body {
+            margin: 6px 0 0;
+            font-size: 14px;
+            color: #475569;
+        }
+
+        .receipt-box {
+            background: #fff;
+            border: 2px dashed #e2e8f0;
+            border-radius: var(--radius);
+            padding: 24px;
+            max-width: 420px;
+            margin: 0 auto;
+        }
+
+        .receipt-box .receipt-header {
+            text-align: center;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 16px;
+            margin-bottom: 16px;
+        }
+
+        .receipt-box .receipt-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 14px;
+        }
+
+        .receipt-box .receipt-row.total {
+            border-top: 2px solid #e2e8f0;
+            margin-top: 8px;
+            padding-top: 12px;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .parent-extra-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .parent-extra-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .top-student-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 0;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 14px;
+        }
+
+        .top-student-row:last-child {
+            border-bottom: none;
+        }
+
+        .top-student-row .rank {
+            font-weight: 600;
+            color: #94a3b8;
+            width: 30px;
+        }
+
+        .top-student-row .student-name {
+            flex: 1;
+            font-weight: 500;
+        }
+
+        .top-student-row .student-score {
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .announcement-mini {
+            border-bottom: 1px solid #f1f5f9;
+            padding: 10px 0;
+        }
+
+        .announcement-mini:last-child {
+            border-bottom: none;
+        }
+
+        .announcement-mini .mini-title {
+            font-weight: 600;
+            font-size: 14px;
+            color: #0f172a;
+        }
+
+        .announcement-mini .mini-meta {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        .announcement-mini .mini-body {
+            font-size: 13px;
+            color: #475569;
+            margin-top: 2px;
+        }
+
+        .parent-stacked {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .parent-stacked .section-card {
+            width: 100%;
+        }
+
+        .parent-stacked .section-card .table-wrap {
+            margin-bottom: 0;
+        }
+
+        .table-bordered td,
+        .table-bordered th {
+            border: 1px solid #e2e8f0;
+        }
+
+        /* For exam subjects grid */
+        .subject-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        .subject-grid .form-group {
+            margin-bottom: 0;
+        }
+        .subject-grid label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #475569;
+        }
+        .subject-grid input {
+            border-radius: 8px;
+            border: 1.5px solid #e2e8f0;
+            padding: 6px 10px;
+            font-size: 13px;
+            width: 100%;
+        }
+        .subject-grid input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(26, 86, 219, 0.1);
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- LOGIN -->
+    <div id="loginPage" class="login-wrapper">
+        <div class="login-card">
+            <div class="logo">
+                <i class="bi bi-mortarboard-fill"></i>
+                <h4>Mfumo wa Shule</h4>
+                <small>School Management System</small>
+            </div>
+
+            <form id="loginForm" onsubmit="return handleLogin(event)">
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Jina la Mtumiaji / ID</label>
+                    <input type="text" class="form-control" id="loginUsername" placeholder="Weka barua pepe au ID" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Neno la Siri</label>
+                    <input type="password" class="form-control" id="loginPassword" placeholder="Weka neno siri" required />
+                </div>
+
+                <div class="mb-4 role-toggle d-flex gap-2 justify-content-center">
+                    <button type="button" class="btn active" data-role="admin" onclick="setRole('admin')">👨‍💼 Msimamizi</button>
+                    <button type="button" class="btn" data-role="parent" onclick="setRole('parent')">👪 Mzazi</button>
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="loginBtn">🔐 Ingia</button>
+
+                <div class="text-center mt-3">
+                    <!-- <small class="text-muted">Admin: admin@shule.com / password</small> -->
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- SIDEBAR OVERLAY -->
+    <div id="sidebarOverlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="brand">
+            <i class="bi bi-mortarboard-fill"></i>
+            <div>
+                <span>Mfumo wa Shule</span>
+                <small id="sidebarRoleLabel">v2.0 &bull; Msimamizi</small>
+            </div>
+        </div>
+
+        <nav class="nav">
+            <div class="nav-label">Kuukuu</div>
+            <a class="nav-link active" data-page="dashboard" onclick="navigate('dashboard')">
+                <i class="bi bi-grid-1x2-fill"></i> Dashboard
+            </a>
+            <a class="nav-link" data-page="students" onclick="navigate('students')">
+                <i class="bi bi-people-fill"></i> Wanafunzi
+            </a>
+            <a class="nav-link" data-page="attendance" onclick="navigate('attendance')">
+                <i class="bi bi-calendar-check-fill"></i> Mahudhurio
+            </a>
+            <a class="nav-link" data-page="exams" onclick="navigate('exams')">
+                <i class="bi bi-bar-chart-fill"></i> Matokeo
+            </a>
+            <a class="nav-link" data-page="fees" onclick="navigate('fees')">
+                <i class="bi bi-coin-fill"></i> Ada
+            </a>
+            <a class="nav-link" data-page="announcements" onclick="navigate('announcements')">
+                <i class="bi bi-megaphone-fill"></i> Matangazo
+            </a>
+
+            <div class="nav-label mt-3">Mzazi</div>
+            <a class="nav-link" data-page="parent" onclick="navigate('parent')">
+                <i class="bi bi-person-badge-fill"></i> Mwanafunzi Wangu
+            </a>
+        </nav>
+
+        <div class="footer">
+            <button class="btn btn-sm btn-outline-danger w-100" onclick="handleLogout()">
+                <i class="bi bi-box-arrow-right me-1"></i> Toka
+            </button>
+            <div class="mt-2">&copy; 2026 Mfumo wa Shule</div>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content" id="mainContent">
+
+        <!-- HEADER -->
+        <header class="header" id="appHeader">
+            <div class="d-flex align-items-center gap-3">
+                <button class="toggle-sidebar" onclick="toggleSidebar()">
+                    <i class="bi bi-list"></i>
+                </button>
+                <span class="page-title" id="pageTitle">Dashboard</span>
+            </div>
+            <div class="user-info">
+                <span class="d-none d-sm-inline text-muted small" id="userRoleBadge">Msimamizi</span>
+                <button class="change-pwd-btn" onclick="openChangePasswordModal()">
+                    <i class="bi bi-key"></i> Badilisha Neno
+                </button>
+                <div class="avatar" id="userAvatar">M</div>
+            </div>
+        </header>
+
+        <!-- CONTENT -->
+        <div class="content">
+
+            <!-- DASHBOARD -->
+            <section id="page-dashboard" class="page-section active">
+                <div class="mb-4">
+                    <h5 class="fw-bold">Karibu tena, <span id="dashboardUserName">Msimamizi</span> 👋</h5>
+                    <p class="text-muted small">Muhtasari wa shule yako leo.</p>
+                </div>
+
+                <div class="row g-4 mb-4">
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="stat-card d-flex align-items-center gap-3">
+                            <div class="icon blue"><i class="bi bi-people-fill"></i></div>
+                            <div>
+                                <div class="number" id="statStudents">0</div>
+                                <div class="label">Wanafunzi</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="stat-card d-flex align-items-center gap-3">
+                            <div class="icon green"><i class="bi bi-person-check-fill"></i></div>
+                            <div>
+                                <div class="number" id="statAttendancePct">0%</div>
+                                <div class="label">Mahudhurio (Leo)</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="stat-card d-flex align-items-center gap-3">
+                            <div class="icon purple"><i class="bi bi-book-fill"></i></div>
+                            <div>
+                                <div class="number" id="statExams">0</div>
+                                <div class="label">Matokeo</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="stat-card d-flex align-items-center gap-3">
+                            <div class="icon orange"><i class="bi bi-coin-fill"></i></div>
+                            <div>
+                                <div class="number" id="statFeesTotal">TSh 0</div>
+                                <div class="label">Ada Zilizokusanywa</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-lg-7">
+                        <div class="table-wrap">
+                            <div class="table-header">
+                                <h6><i class="bi bi-clock-history me-2"></i>Matangazo ya Hivi Karibuni</h6>
+                                <span class="badge bg-soft-primary text-primary-custom">Leo</span>
+                            </div>
+                            <div id="dashAnnouncements" class="p-3"></div>
+                        </div>
+                    </div>
+                    <div class="col-lg-5">
+                        <div class="table-wrap">
+                            <div class="table-header">
+                                <h6><i class="bi bi-trophy-fill me-2"></i>Wanafunzi Bora</h6>
+                            </div>
+                            <div id="dashTopStudents" class="p-3"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STUDENTS -->
+            <section id="page-students" class="page-section">
+                <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
+                    <h5 class="fw-bold mb-0"><i class="bi bi-people-fill me-2 text-primary-custom"></i>Orodha ya Wanafunzi</h5>
+                    <button class="btn btn-primary btn-sm" onclick="openStudentModal(null)">
+                        <i class="bi bi-plus-lg me-1"></i> Mwanafunzi Mpya
+                    </button>
+                </div>
+
+                <div class="table-wrap">
+                    <div class="table-header">
+                        <div class="d-flex gap-2 flex-wrap">
+                            <input type="text" class="form-control form-control-sm" style="width:200px;" placeholder="Tafuta..." id="studentSearch" oninput="renderStudents()" />
+                            <select class="form-select form-select-sm" style="width:140px;" id="studentClassFilter" onchange="renderStudents()">
+                                <option value="">Darasa Lote</option>
+                                <option value="Darasa 1">Darasa 1</option>
+                                <option value="Darasa 2">Darasa 2</option>
+                                <option value="Darasa 3">Darasa 3</option>
+                            </select>
+                        </div>
+                        <span class="text-muted small" id="studentCount">0 wanafunzi</span>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr><th>ID</th><th>Jina</th><th>Darasa</th><th>Mzazi</th><th>Simu</th><th>Mahud. %</th><th class="text-end">Vitendo</th></tr>
+                        </thead>
+                        <tbody id="studentTableBody">
+                            <!-- rendered by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- ATTENDANCE -->
+            <section id="page-attendance" class="page-section">
+                <h5 class="fw-bold mb-4"><i class="bi bi-calendar-check-fill me-2 text-primary-custom"></i>Mahudhurio</h5>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-sm-3">
+                        <label class="form-label fw-semibold small">Tarehe</label>
+                        <input type="date" class="form-control" id="attDate" onchange="renderAttendance()" />
+                    </div>
+                    <div class="col-sm-3">
+                        <label class="form-label fw-semibold small">Darasa</label>
+                        <select class="form-select" id="attClass" onchange="renderAttendance()">
+                            <option value="">Darasa Lote</option>
+                            <option value="Darasa 1">Darasa 1</option>
+                            <option value="Darasa 2">Darasa 2</option>
+                            <option value="Darasa 3">Darasa 3</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-3 d-flex align-items-end">
+                        <button class="btn btn-primary btn-sm w-100" onclick="loadAttendance()">
+                            <i class="bi bi-eye me-1"></i> Onyesha
+                        </button>
+                    </div>
+                    <div class="col-sm-3 d-flex align-items-end">
+                        <button class="btn btn-success btn-sm w-100" onclick="saveAttendance()">
+                            <i class="bi bi-save me-1"></i> Hifadhi
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-wrap">
+                    <div class="table-header">
+                        <h6>Rekodi ya Mahudhurio</h6>
+                        <span class="text-muted small" id="attCount">0 wanafunzi</span>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr><th>Mwanafunzi</th><th>Darasa</th><th>Asilimia</th></tr>
+                        </thead>
+                        <tbody id="attendanceTableBody">
+                            <!-- rendered by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- EXAMS -->
+            <section id="page-exams" class="page-section">
+                <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
+                    <h5 class="fw-bold mb-0"><i class="bi bi-bar-chart-fill me-2 text-primary-custom"></i>Matokeo ya Mtihani</h5>
+                    <button class="btn btn-primary btn-sm" onclick="openExamModal(null)">
+                        <i class="bi bi-plus-lg me-1"></i> Ongeza Matokeo
+                    </button>
+                </div>
+
+                <div class="table-wrap">
+                    <div class="table-header">
+                        <div class="d-flex gap-2 flex-wrap">
+                            <select class="form-select form-select-sm" style="width:140px;" id="examClassFilter" onchange="renderExams()">
+                                <option value="">Darasa Lote</option>
+                                <option value="Darasa 1">Darasa 1</option>
+                                <option value="Darasa 2">Darasa 2</option>
+                                <option value="Darasa 3">Darasa 3</option>
+                            </select>
+                            <button class="btn btn-outline-primary btn-sm" onclick="renderExams()"><i class="bi bi-arrow-repeat"></i></button>
+                        </div>
+                        <span class="text-muted small" id="examCount">0 rekodi</span>
+                    </div>
+                    <div style="overflow-x:auto;">
+                        <table class="table" style="min-width:1200px;">
+                            <thead>
+                                <tr>
+                                    <th>Jina</th>
+                                    <th>Darasa</th>
+                                    <th>Math</th>
+                                    <th>Eng</th>
+                                    <th>Kisw</th>
+                                    <th>Sci</th>
+                                    <th>SS</th>
+                                    <th>Civ</th>
+                                    <th>RE</th>
+                                    <th>Voc</th>
+                                    <th>ICT</th>
+                                    <th>Jumla</th>
+                                    <th>Wastani</th>
+                                    <th>Div</th>
+                                    <th>Nafasi</th>
+                                    <th class="text-end">Vitendo</th>
+                                </tr>
+                            </thead>
+                            <tbody id="examTableBody">
+                                <!-- rendered by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- FEES -->
+            <section id="page-fees" class="page-section">
+                <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
+                    <h5 class="fw-bold mb-0"><i class="bi bi-coin-fill me-2 text-primary-custom"></i>Ada na Malipo</h5>
+                    <button class="btn btn-primary btn-sm" onclick="openFeeModal(null)">
+                        <i class="bi bi-plus-lg me-1"></i> Rekodi Malipo
+                    </button>
+                </div>
+
+                <div id="feeSummary" class="mb-3"></div>
+
+                <div class="table-wrap">
+                    <div class="table-header">
+                        <div class="d-flex gap-2 flex-wrap">
+                            <select class="form-select form-select-sm" style="width:140px;" id="feeClassFilter" onchange="renderFees()">
+                                <option value="">Darasa Lote</option>
+                                <option value="Darasa 1">Darasa 1</option>
+                                <option value="Darasa 2">Darasa 2</option>
+                                <option value="Darasa 3">Darasa 3</option>
+                            </select>
+                        </div>
+                        <span class="text-muted small" id="feeCount">0 rekodi</span>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr><th>Jina</th><th>Darasa</th><th>Inadaiwa</th><th>Imelipwa</th><th>Salio</th><th>Tarehe</th><th>Rejea</th><th class="text-end">Vitendo</th></tr>
+                        </thead>
+                        <tbody id="feeTableBody">
+                            <!-- rendered by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- ANNOUNCEMENTS -->
+            <section id="page-announcements" class="page-section">
+                <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
+                    <h5 class="fw-bold mb-0"><i class="bi bi-megaphone-fill me-2 text-primary-custom"></i>Matangazo</h5>
+                    <button class="btn btn-primary btn-sm" onclick="openAnnouncementModal(null)">
+                        <i class="bi bi-plus-lg me-1"></i> Tangazo Jipya
+                    </button>
+                </div>
+
+                <div id="announceList"></div>
+            </section>
+
+            <!-- PARENT PORTAL -->
+            <section id="page-parent" class="page-section">
+                <div class="mb-4">
+                    <h5 class="fw-bold"><i class="bi bi-person-badge-fill me-2 text-primary-custom"></i>Taarifa za Mwanafunzi Wangu</h5>
+                    <p class="text-muted small">Muhtasari wa mwanafunzi wako, matangazo na wanafunzi bora.</p>
+                </div>
+
+                <div class="parent-stacked">
+                    <div class="section-card" id="parentInfoWrapper">
+                        <div id="parentInfo"></div>
+                    </div>
+
+                    <div class="section-card">
+                        <div class="table-wrap">
+                            <div class="table-header">
+                                <h6><i class="bi bi-clock-history me-2"></i>Matangazo ya Hivi Karibuni</h6>
+                                <span class="badge bg-soft-primary text-primary-custom">Leo</span>
+                            </div>
+                            <div id="parentAnnouncements" class="p-3"></div>
+                        </div>
+                    </div>
+
+                    <div class="section-card">
+                        <div class="table-wrap">
+                            <div class="table-header">
+                                <h6><i class="bi bi-trophy-fill me-2"></i>Wanafunzi Bora 5</h6>
+                            </div>
+                            <div id="parentTopStudents" class="p-3"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div><!-- /content -->
+    </div><!-- /main-content -->
+
+    <!-- MODALS -->
+    <!-- STUDENT MODAL -->
+    <div class="modal fade" id="studentModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title fw-bold"><i class="bi bi-person-plus me-2"></i><span id="studentModalTitle">Mwongeze Mwanafunzi</span></h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="studentForm">
+                        <input type="hidden" id="editStudentId" />
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">ID ya Mwanafunzi</label>
+                            <input type="text" class="form-control" id="sId" placeholder="Kwa mfano: S001" required />
+                            <small class="text-muted">Weka ID yako mwenyewe au ibadilishe. Hakikisha haijatumiwa na mwingine.</small>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Jina Kamili</label>
+                            <input type="text" class="form-control" id="sName" placeholder="Jina la mwanafunzi" required />
+                        </div>
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <label class="form-label fw-semibold small">Jinsia</label>
+                                <select class="form-select" id="sGender">
+                                    <option value="M">M</option>
+                                    <option value="F">F</option>
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label fw-semibold small">Tarehe ya Kuzaliwa</label>
+                                <input type="date" class="form-control" id="sDob" />
+                            </div>
+                        </div>
+                        <div class="mb-3 mt-2">
+                            <label class="form-label fw-semibold small">Darasa</label>
+                            <select class="form-select" id="sClass">
+                                <option>Darasa 1</option><option>Darasa 2</option><option>Darasa 3</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Jina la Mzazi / Mlezi</label>
+                            <input type="text" class="form-control" id="sParent" placeholder="Jina la mzazi" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Namba ya Simu ya Mzazi</label>
+                            <input type="text" class="form-control" id="sPhone" placeholder="0712345678" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Anwani</label>
+                            <input type="text" class="form-control" id="sAddress" placeholder="Anwani" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Neno la Siri (kwa mzazi)</label>
+                            <input type="text" class="form-control" id="sPassword" placeholder="Weka neno siri" value="1234" />
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Ghairi</button>
+                    <button class="btn btn-primary btn-sm" onclick="saveStudent()">Hifadhi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- EXAM MODAL (with 10 subjects) -->
+    <div class="modal fade" id="examModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title fw-bold"><i class="bi bi-plus-circle me-2"></i><span id="examModalTitle">Ongeza Matokeo</span></h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="examForm">
+                        <input type="hidden" id="editExamId" />
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Mwanafunzi</label>
+                            <select class="form-select" id="eStudent" required></select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Darasa</label>
+                            <input type="text" class="form-control" id="eClass" readonly style="background:#f1f5f9;" />
+                        </div>
+                        <div class="subject-grid">
+                            <div class="form-group">
+                                <label>Mathematics</label>
+                                <input type="number" class="form-control" id="eMath" placeholder="0-100" min="0" max="100" />
+                            </div>
+                            <div class="form-group">
+                                <label>English Language</label>
+                                <input type="number" class="form-control" id="eEng" placeholder="0-100" min="0" max="100" />
+                            </div>
+                            <div class="form-group">
+                                <label>Kiswahili</label>
+                                <input type="number" class="form-control" id="eKisw" placeholder="0-100" min="0" max="100" />
+                            </div>
+                            <div class="form-group">
+                                <label>Science</label>
+                                <input type="number" class="form-control" id="eScience" placeholder="0-100" min="0" max="100" />
+                            </div>
+                            <div class="form-group">
+                                <label>Social Studies</label>
+                                <input type="number" class="form-control" id="eSS" placeholder="0-100" min="0" max="100" />
+                            </div>
+                            <div class="form-group">
+                                <label>Civics</label>
+                                <input type="number" class="form-control" id="eCivics" placeholder="0-100" min="0" max="100" />
+                            </div>
+                            <div class="form-group">
+                                <label>Religious Studies</label>
+                                <input type="number" class="form-control" id="eRE" placeholder="0-100" min="0" max="100" />
+                            </div>
+                            <div class="form-group">
+                                <label>Vocational / Life Skills</label>
+                                <input type="number" class="form-control" id="eVoc" placeholder="0-100" min="0" max="100" />
+                            </div>
+                            <div class="form-group">
+                                <label>ICT / Computer Studies</label>
+                                <input type="number" class="form-control" id="eICT" placeholder="0-100" min="0" max="100" />
+                            </div>
+                            <div class="form-group">
+                                <label>Additional (optional)</label>
+                                <input type="number" class="form-control" id="eExtra" placeholder="0-100" min="0" max="100" />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Ghairi</button>
+                    <button class="btn btn-primary btn-sm" onclick="saveExam()">Hifadhi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FEE MODAL -->
+    <div class="modal fade" id="feeModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title fw-bold"><i class="bi bi-cash-stack me-2"></i><span id="feeModalTitle">Rekodi Malipo</span></h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="feeForm">
+                        <input type="hidden" id="editFeeId" />
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Mwanafunzi</label>
+                            <select class="form-select" id="fStudent" required></select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Inadaiwa (TSh)</label>
+                            <input type="number" class="form-control" id="fRequired" placeholder="500000" value="500000" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Kiasi Kilicholipwa (TSh)</label>
+                            <input type="number" class="form-control" id="fPaid" placeholder="300000" value="0" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Tarehe ya Malipo</label>
+                            <input type="date" class="form-control" id="fDate" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Rejea / Nambari ya Malipo</label>
+                            <input type="text" class="form-control" id="fRef" placeholder="INV-001" />
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Ghairi</button>
+                    <button class="btn btn-success btn-sm" onclick="saveFee()">✅ Hifadhi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ANNOUNCEMENT MODAL -->
+    <div class="modal fade" id="announcementModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title fw-bold"><i class="bi bi-megaphone me-2"></i><span id="announcementModalTitle">Tangazo Jipya</span></h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="announcementForm">
+                        <input type="hidden" id="editAnnouncementId" />
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Kichwa</label>
+                            <input type="text" class="form-control" id="aTitle" placeholder="Kichwa cha tangazo" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Maelezo</label>
+                            <textarea class="form-control" id="aBody" rows="3" placeholder="Maelezo ya tangazo"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Tarehe</label>
+                            <input type="date" class="form-control" id="aDate" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Aina</label>
+                            <select class="form-select" id="aType">
+                                <option value="Meeting">Mkutano</option>
+                                <option value="Holiday">Likizo</option>
+                                <option value="Examination">Mtihani</option>
+                                <option value="Event">Tukio</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Ghairi</button>
+                    <button class="btn btn-primary btn-sm" onclick="saveAnnouncement()">Hifadhi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHANGE PASSWORD MODAL -->
+    <div class="modal fade" id="changePasswordModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title fw-bold"><i class="bi bi-key-fill me-2"></i>Badilisha Neno la Siri</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="changePasswordForm">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Jina la Mtumiaji (mpya)</label>
+                            <input type="text" class="form-control" id="newUsername" placeholder="Weka jina mpya la mtumiaji" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Jina Kamili (mpya)</label>
+                            <input type="text" class="form-control" id="newFullName" placeholder="Weka jina kamili mpya" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Neno la Siri (mpya)</label>
+                            <input type="password" class="form-control" id="newPassword" placeholder="Weka neno siri mpya" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Neno la Siri (la sasa)</label>
+                            <input type="password" class="form-control" id="currentPassword" placeholder="Weka neno siri la sasa" required />
+                            <small class="text-muted">Inahitajika kwa uthibitishaji.</small>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Ghairi</button>
+                    <button class="btn btn-primary btn-sm" onclick="savePasswordChange()">Hifadhi Mabadiliko</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- VIEW SUBJECTS MODAL (PARENT) -->
+    <div class="modal fade" id="viewSubjectsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header" style="background: var(--primary-light);">
+                    <h6 class="modal-title fw-bold">
+                        <i class="bi bi-book-fill me-2" style="color: var(--primary);"></i>
+                        <span id="viewSubjectsTitle">Masomo ya Mwanafunzi</span>
+                    </h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 id="viewStudentName" class="fw-bold mb-0">Jina la Mwanafunzi</h6>
+                                <span id="viewStudentClass" class="badge bg-soft-primary text-primary-custom">Darasa</span>
+                            </div>
+                            <div class="text-end">
+                                <span class="text-muted small">Jumla: <strong id="viewTotalMarks">0</strong></span><br>
+                                <span class="text-muted small">Wastani: <strong id="viewAverage">0%</strong></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-wrap" style="border: none; box-shadow: none; padding: 0;">
+                        <table class="table table-bordered" id="subjectsTable">
+                            <thead style="background: #f8fafc;">
+                                <tr>
+                                    <th>Somo</th>
+                                    <th class="text-center">Alama</th>
+                                    <th class="text-center">Daraja</th>
+                                </tr>
+                            </thead>
+                            <tbody id="subjectsTableBody">
+                                <!-- rendered by JS -->
+                            </tbody>
+                            <tfoot style="background: #f8fafc; font-weight: 600;">
+                                <tr>
+                                    <td><strong>Jumla</strong></td>
+                                    <td class="text-center" id="footerTotal">0</td>
+                                    <td class="text-center" id="footerDivision">-</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Wastani</strong></td>
+                                    <td class="text-center" colspan="2" id="footerAverage">0%</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Funga</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js">
+    </script>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <script>
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // FIREBASE INIT
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        const firebaseConfig = {
+            apiKey: "AIzaSyCCs7XZmJwK90aMZ2kzU7g7iPyBN11lHsY",
+            authDomain: "mfumo-wa-shule.firebaseapp.com",
+            projectId: "mfumo-wa-shule",
+            storageBucket: "mfumo-wa-shule.firebasestorage.app",
+            messagingSenderId: "828217216595",
+            appId: "1:828217216595:web:a9318c0a75b7d3389240a6",
+            measurementId: "G-K6CT8D015R"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // DATA LAYER (localStorage)
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function getData(key, fallback) {
+            try {
+                const raw = localStorage.getItem('sms_sw_' + key);
+                return raw ? JSON.parse(raw) : fallback;
+            } catch { return fallback; }
+        }
+
+        function setData(key, val) {
+            localStorage.setItem('sms_sw_' + key, JSON.stringify(val));
+        }
+
+        function getStudents() { return getData('students', []); }
+        function setStudents(v) { setData('students', v); }
+
+        function getAttendance() { return getData('attendance', []); }
+        function setAttendance(v) { setData('attendance', v); }
+
+        function getExams() { return getData('exams', []); }
+        function setExams(v) { setData('exams', v); }
+
+        function getFees() { return getData('fees', []); }
+        function setFees(v) { setData('fees', v); }
+
+        function getAnnouncements() { return getData('announcements', []); }
+        function setAnnouncements(v) { setData('announcements', v); }
+
+        function getUsers() { return getData('users', []); }
+        function setUsers(v) { setData('users', v); }
+
+        function generateId(prefix) {
+            return prefix + Date.now().toString(36).toUpperCase() + Math.random().toString(36).substr(2, 3).toUpperCase();
+        }
+
+        function getStudentById(id) {
+            return getStudents().find(s => s.id === id);
+        }
+
+        function getToday() {
+            return new Date().toISOString().split('T')[0];
+        }
+
+        function formatCurrency(amount) {
+            return 'TSh ' + amount.toLocaleString();
+        }
+
+        function getAttendancePercentage(studentId) {
+            const recs = getAttendance().filter(a => a.studentId === studentId);
+            if (recs.length === 0) return 0;
+            const total = recs.reduce((sum, r) => sum + (parseInt(r.asilimia) || 0), 0);
+            return Math.round(total / recs.length);
+        }
+
+        function getTodayAttendanceAvg() {
+            const today = getToday();
+            const atts = getAttendance().filter(a => a.tarehe === today);
+            if (atts.length === 0) return 0;
+            const total = atts.reduce((sum, r) => sum + (parseInt(r.asilimia) || 0), 0);
+            return Math.round(total / atts.length);
+        }
+
+        function calculateDivision(avg) {
+            if (avg >= 80) return { label: 'I', badge: 'green' };
+            if (avg >= 70) return { label: 'II', badge: 'blue' };
+            if (avg >= 60) return { label: 'III', badge: 'yellow' };
+            if (avg >= 50) return { label: 'IV', badge: 'purple' };
+            return { label: 'V', badge: 'red' };
+        }
+
+        function getGrade(marks) {
+            if (marks >= 80) return { label: 'A', badge: 'green' };
+            if (marks >= 70) return { label: 'B', badge: 'blue' };
+            if (marks >= 60) return { label: 'C', badge: 'yellow' };
+            if (marks >= 50) return { label: 'D', badge: 'purple' };
+            return { label: 'F', badge: 'red' };
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // INIT DATA (localStorage)
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function initData() {
+            if (getStudents().length === 0) {
+                setStudents([
+                    { id: 'S001', jina: 'Ali Juma', jinsia: 'M', tarehe: '2010-05-12', darasa: 'Darasa 1', mzazi: 'Juma',
+                        simu: '0712345678', anwani: 'Dar', password: '1234' },
+                    { id: 'S002', jina: 'Fatma Hassan', jinsia: 'F', tarehe: '2010-08-20', darasa: 'Darasa 2',
+                        mzazi: 'Hassan', simu: '0712345679', anwani: 'Dar', password: '5678' },
+                    { id: 'S003', jina: 'Baraka Mwangi', jinsia: 'M', tarehe: '2009-11-02', darasa: 'Darasa 3',
+                        mzazi: 'Mwangi', simu: '0712345680', anwani: 'Arusha', password: '9101' },
+                    { id: 'S004', jina: 'Amina Said', jinsia: 'F', tarehe: '2010-03-15', darasa: 'Darasa 1', mzazi: 'Said',
+                        simu: '0712345681', anwani: 'Dar', password: '1122' },
+                    { id: 'S005', jina: 'John Peter', jinsia: 'M', tarehe: '2009-07-25', darasa: 'Darasa 2', mzazi: 'Peter',
+                        simu: '0712345682', anwani: 'Mwanza', password: '3344' },
+                    // 🔥 Diana Mkumbo ameongezwa hapa
+                    { id: 'S006', jina: 'Diana Mkumbo', jinsia: 'F', tarehe: '2010-04-10', darasa: 'Darasa 1',
+                        mzazi: 'Mkumbo', simu: '0712345683', anwani: 'Dar', password: '4321' }
+                ]);
+            }
+            if (getAttendance().length === 0) {
+                const today = getToday();
+                setAttendance([
+                    { id: 'A1', studentId: 'S001', tarehe: today, asilimia: 100 },
+                    { id: 'A2', studentId: 'S002', tarehe: today, asilimia: 100 },
+                    { id: 'A3', studentId: 'S003', tarehe: today, asilimia: 0 },
+                    { id: 'A4', studentId: 'S004', tarehe: today, asilimia: 100 },
+                    { id: 'A5', studentId: 'S005', tarehe: today, asilimia: 0 },
+                    // Tunaweza kuongeza attendance ya Diana pia
+                    { id: 'A6', studentId: 'S006', tarehe: today, asilimia: 100 }
+                ]);
+            } else {
+                let att = getAttendance();
+                let converted = false;
+                att = att.map(r => {
+                    if (r.hali && r.asilimia === undefined) {
+                        converted = true;
+                        const val = r.hali === 'Present' ? 100 : r.hali === 'Absent' ? 0 : parseInt(r.hali) || 0;
+                        return { id: r.id, studentId: r.studentId, tarehe: r.tarehe, asilimia: val };
+                    }
+                    return r;
+                });
+                if (converted) setAttendance(att);
+            }
+
+            if (getExams().length === 0) {
+                setExams([
+                    { id: 'E1', studentId: 'S004', darasa: 'Darasa 1', math: 85, eng: 82, kisw: 80, science: 88, ss: 84,
+                        civics: 70, re: 81, voc: 75, ict: 90, extra: 0 },
+                    { id: 'E2', studentId: 'S002', darasa: 'Darasa 2', math: 70, eng: 65, kisw: 80, science: 72, ss: 68,
+                        civics: 60, re: 75, voc: 70, ict: 80, extra: 0 },
+                    { id: 'E3', studentId: 'S001', darasa: 'Darasa 1', math: 55, eng: 60, kisw: 58, science: 62, ss: 57,
+                        civics: 55, re: 61, voc: 50, ict: 60, extra: 0 },
+                    { id: 'E4', studentId: 'S003', darasa: 'Darasa 3', math: 50, eng: 55, kisw: 48, science: 52, ss: 56,
+                        civics: 45, re: 49, voc: 55, ict: 50, extra: 0 },
+                    { id: 'E5', studentId: 'S005', darasa: 'Darasa 2', math: 40, eng: 45, kisw: 38, science: 42, ss: 39,
+                        civics: 40, re: 35, voc: 45, ict: 40, extra: 0 },
+                    // 🔥 Matokeo ya Diana
+                    { id: 'E6', studentId: 'S006', darasa: 'Darasa 1', math: 90, eng: 88, kisw: 85, science: 92, ss: 87,
+                        civics: 80, re: 86, voc: 82, ict: 95, extra: 0 }
+                ]);
+            }
+            if (getFees().length === 0) {
+                setFees([
+                    { id: 'F1', studentId: 'S001', feeRequired: 500000, amountPaid: 350000, paymentDate: '2026-08-10',
+                        reference: 'INV-001' },
+                    { id: 'F2', studentId: 'S002', feeRequired: 500000, amountPaid: 500000, paymentDate: '2026-08-12',
+                        reference: 'INV-002' },
+                    { id: 'F3', studentId: 'S003', feeRequired: 500000, amountPaid: 200000, paymentDate: '2026-08-05',
+                        reference: 'INV-003' },
+                    { id: 'F4', studentId: 'S004', feeRequired: 500000, amountPaid: 480000, paymentDate: '2026-08-15',
+                        reference: 'INV-004' },
+                    { id: 'F5', studentId: 'S005', feeRequired: 500000, amountPaid: 100000, paymentDate: '2026-08-01',
+                        reference: 'INV-005' },
+                    // 🔥 Ada ya Diana
+                    { id: 'F6', studentId: 'S006', feeRequired: 500000, amountPaid: 200000, paymentDate: '2026-08-20',
+                        reference: 'INV-006' }
+                ]);
+            }
+            if (getAnnouncements().length === 0) {
+                setAnnouncements([
+                    { id: 'AN1', title: 'Mkutano wa Wazazi', body: 'Mkutano wa wazazi utafanyika tarehe 25 Agosti 2026.',
+                        date: '2026-08-17', type: 'Meeting' },
+                    { id: 'AN2', title: 'Likizo ya Mwisho wa Muhula',
+                        body: 'Likizo itaanza Septemba 30, 2026.', date: '2026-08-17', type: 'Holiday' },
+                    { id: 'AN3', title: 'Mtihani wa Mwisho wa Muhula',
+                        body: 'Mtihani utafanyika Oktoba 15-20, 2026.', date: '2026-08-17', type: 'Examination' },
+                ]);
+            }
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // APP STATE
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        let currentUser = null;
+        let selectedRole = 'admin';
+        let currentPage = 'dashboard';
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // SET ROLE - Inaweka placeholder kulingana na jukumu
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function setRole(role) {
+            selectedRole = role;
+            document.querySelectorAll('.role-toggle .btn').forEach(b => b.classList.toggle('active', b.dataset.role === role));
+            const usernameInput = document.getElementById('loginUsername');
+            const passwordInput = document.getElementById('loginPassword');
+
+            if (role === 'admin') {
+                usernameInput.placeholder = 'Weka barua pepe';
+                passwordInput.placeholder = 'Weka neno siri';
+                usernameInput.value = '';
+                passwordInput.value = '';
+            } else {
+                usernameInput.placeholder = 'Weka ID ya mwanafunzi (mfano S001)';
+                passwordInput.placeholder = 'Weka neno siri la mwanafunzi';
+                usernameInput.value = '';
+                passwordInput.value = '';
+            }
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // LOGIN / LOGOUT
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+            const btn = document.getElementById('loginBtn');
+            btn.disabled = true;
+            btn.innerHTML = '⏳ Inaingia...';
+
+            if (selectedRole === 'admin') {
+                // 🔥 NJIA YA ADMIN: Firebase Authentication
+                auth.signInWithEmailAndPassword(username, password)
+                    .then((userCredential) => {
+                        const user = userCredential.user;
+                        return db.collection('users').where('email', '==', user.email).get()
+                            .then((querySnapshot) => {
+                                if (!querySnapshot.empty) {
+                                    const doc = querySnapshot.docs[0];
+                                    const userData = doc.data();
+                                    currentUser = {
+                                        role: userData.role || 'admin',
+                                        name: userData.fullName || 'Msimamizi',
+                                        uid: userData.uid || user.uid,
+                                        email: user.email
+                                    };
+                                    showApp();
+                                } else {
+                                    // Kama hakuna data Firestore, tumia defaults
+                                    currentUser = {
+                                        role: 'admin',
+                                        name: 'Msimamizi',
+                                        uid: user.uid,
+                                        email: user.email
+                                    };
+                                    showApp();
+                                }
+                                btn.disabled = false;
+                                btn.innerHTML = '🔐 Ingia';
+                            });
+                    })
+                    .catch((error) => {
+                        alert('❌ Kuingia kwa Admin kumeshindwa: ' + error.message);
+                        btn.disabled = false;
+                        btn.innerHTML = '🔐 Ingia';
+                    });
+            } else if (selectedRole === 'parent') {
+                // 🏫 NJIA YA MZAZI: localStorage (kama zamani)
+                const students = getStudents();
+                const found = students.find(s => s.id === username && s.password === password);
+                if (found) {
+                    currentUser = {
+                        role: 'parent',
+                        studentId: found.id,
+                        name: found.mzazi || found.jina
+                    };
+                    showApp();
+                } else {
+                    alert('❌ Namba ya mwanafunzi au neno siri si sahihi.');
+                }
+                btn.disabled = false;
+                btn.innerHTML = '🔐 Ingia';
+            }
+
+            return false;
+        }
+
+        function handleLogout() {
+            if (currentUser && currentUser.role === 'admin') {
+                auth.signOut().catch(err => console.error('Logout error:', err));
+            }
+            currentUser = null;
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('mainContent').style.display = 'none';
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('sidebarOverlay').classList.remove('active');
+        }
+
+        function showApp() {
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+
+            const isAdmin = currentUser.role === 'admin';
+            document.getElementById('userRoleBadge').textContent = isAdmin ? 'Msimamizi' : 'Mzazi';
+            document.getElementById('userAvatar').textContent = isAdmin ? 'M' : 'P';
+            document.getElementById('dashboardUserName').textContent = isAdmin ? 'Msimamizi' : currentUser.name || 'Mzazi';
+            document.getElementById('sidebarRoleLabel').textContent = isAdmin ? 'v2.0 • Msimamizi' : 'v2.0 • Mzazi';
+
+            document.querySelector('.change-pwd-btn').style.display = isAdmin ? 'inline-block' : 'none';
+
+            document.querySelectorAll('.sidebar .nav-link').forEach(link => {
+                const page = link.dataset.page;
+                if (!isAdmin && (page === 'students' || page === 'attendance' || page === 'exams' ||
+                        page === 'fees' || page === 'announcements')) {
+                    link.style.display = 'none';
+                } else {
+                    link.style.display = 'flex';
+                }
+            });
+
+            if (!isAdmin) {
+                navigate('parent');
+            } else {
+                navigate('dashboard');
+            }
+
+            renderAll();
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // CHANGE PASSWORD FUNCTIONS (bado local, lakini tutahamisha Firebase later)
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function openChangePasswordModal() {
+            const users = getUsers();
+            const admin = users.find(u => u.role === 'admin');
+            if (admin) {
+                document.getElementById('newUsername').value = admin.username;
+                document.getElementById('newFullName').value = admin.fullName || '';
+            }
+            document.getElementById('newPassword').value = '';
+            document.getElementById('currentPassword').value = '';
+            new bootstrap.Modal(document.getElementById('changePasswordModal')).show();
+        }
+
+        function savePasswordChange() {
+            const newUsername = document.getElementById('newUsername').value.trim();
+            const newFullName = document.getElementById('newFullName').value.trim();
+            const newPassword = document.getElementById('newPassword').value.trim();
+            const currentPassword = document.getElementById('currentPassword').value.trim();
+
+            if (!newUsername || !newPassword || !currentPassword) {
+                alert('Tafadhali jaza sehemu zote muhimu.');
+                return;
+            }
+
+            let users = getUsers();
+            const adminIndex = users.findIndex(u => u.role === 'admin');
+            if (adminIndex === -1) {
+                alert('Admin account not found.');
+                return;
+            }
+
+            const admin = users[adminIndex];
+
+            if (admin.password !== currentPassword) {
+                alert('❌ Neno la siri la sasa si sahihi. Jaribu tena.');
+                return;
+            }
+
+            users[adminIndex] = {
+                ...admin,
+                username: newUsername,
+                fullName: newFullName || admin.fullName,
+                password: newPassword
+            };
+
+            setUsers(users);
+
+            if (currentUser && currentUser.role === 'admin') {
+                currentUser.name = newFullName || admin.fullName;
+                document.getElementById('dashboardUserName').textContent = currentUser.name;
+                document.getElementById('sidebarRoleLabel').textContent = 'v2.0 • Msimamizi';
+            }
+
+            bootstrap.Modal.getInstance(document.getElementById('changePasswordModal')).hide();
+            alert('✅ Taarifa zimebadilishwa! Tafadhali ingia tena kwa kutumia jina na neno siri mpya.');
+            handleLogout();
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // VIEW SUBJECTS (PARENT)
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function viewSubjects(studentId) {
+            const student = getStudentById(studentId);
+            if (!student) {
+                alert('Mwanafunzi huyo hapatikani.');
+                return;
+            }
+
+            const exam = getExams().find(e => e.studentId === studentId);
+            if (!exam) {
+                alert('Hakuna matokeo ya mtihani kwa mwanafunzi huyu.');
+                return;
+            }
+
+            document.getElementById('viewSubjectsTitle').textContent = `Masomo ya ${student.jina}`;
+            document.getElementById('viewStudentName').textContent = student.jina;
+            document.getElementById('viewStudentClass').textContent = student.darasa;
+
+            const subjects = [
+                { name: 'Mathematics', value: exam.math || 0 },
+                { name: 'English Language', value: exam.eng || 0 },
+                { name: 'Kiswahili', value: exam.kisw || 0 },
+                { name: 'Science', value: exam.science || 0 },
+                { name: 'Social Studies', value: exam.ss || 0 },
+                { name: 'Civics', value: exam.civics || 0 },
+                { name: 'Religious Studies', value: exam.re || 0 },
+                { name: 'Vocational / Life Skills', value: exam.voc || 0 },
+                { name: 'ICT / Computer Studies', value: exam.ict || 0 },
+                { name: 'Additional', value: exam.extra || 0 }
+            ];
+
+            const total = subjects.reduce((sum, s) => sum + s.value, 0);
+            const average = Math.round(total / 10);
+            const div = calculateDivision(average);
+
+            const tbody = document.getElementById('subjectsTableBody');
+            tbody.innerHTML = subjects.map(s => {
+                const grade = getGrade(s.value);
+                return `<tr>
+                    <td>${s.name}</td>
+                    <td class="text-center fw-semibold">${s.value}</td>
+                    <td class="text-center"><span class="badge-status ${grade.badge}">${grade.label}</span></td>
+                </tr>`;
+            }).join('');
+
+            document.getElementById('footerTotal').textContent = total;
+            document.getElementById('footerAverage').textContent = `${average}%`;
+            document.getElementById('footerDivision').innerHTML = `<span class="badge-status ${div.badge}">${div.label}</span>`;
+
+            new bootstrap.Modal(document.getElementById('viewSubjectsModal')).show();
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // NAVIGATION
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function navigate(page) {
+            if (!currentUser) return;
+            if (currentUser.role !== 'admin' && page !== 'parent') return;
+
+            currentPage = page;
+
+            document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
+            const target = document.getElementById('page-' + page);
+            if (target) target.classList.add('active');
+
+            document.querySelectorAll('.sidebar .nav-link').forEach(link => {
+                link.classList.toggle('active', link.dataset.page === page);
+            });
+
+            const titles = {
+                dashboard: 'Dashboard',
+                students: 'Wanafunzi',
+                attendance: 'Mahudhurio',
+                exams: 'Matokeo',
+                fees: 'Ada',
+                announcements: 'Matangazo',
+                parent: 'Mwanafunzi Wangu'
+            };
+            document.getElementById('pageTitle').textContent = titles[page] || 'Dashboard';
+
+            if (page === 'dashboard') renderDashboard();
+            if (page === 'students') renderStudents();
+            if (page === 'attendance') renderAttendance();
+            if (page === 'exams') renderExams();
+            if (page === 'fees') renderFees();
+            if (page === 'announcements') renderAnnouncements();
+            if (page === 'parent') renderParentView();
+
+            closeSidebar();
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('sidebarOverlay').classList.toggle('active');
+        }
+
+        function closeSidebar() {
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('sidebarOverlay').classList.remove('active');
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // RENDER: DASHBOARD
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function renderDashboard() {
+            const students = getStudents();
+            const exams = getExams();
+            const fees = getFees();
+            const announcements = getAnnouncements();
+
+            document.getElementById('statStudents').textContent = students.length;
+
+            const avgToday = getTodayAttendanceAvg();
+            document.getElementById('statAttendancePct').textContent = avgToday + '%';
+
+            document.getElementById('statExams').textContent = exams.length;
+
+            const totalPaid = fees.reduce((sum, f) => sum + f.amountPaid, 0);
+            document.getElementById('statFeesTotal').textContent = formatCurrency(totalPaid);
+
+            const sortedAnn = announcements.slice().sort((a, b) => new Date(b.date) - new Date(a.date));
+            const annHtml = sortedAnn.length === 0 ?
+                '<p class="text-muted text-center small">Hakuna matangazo bado.</p>' :
+                sortedAnn.slice(0, 3).map(a =>
+                    `<div class="border-bottom pb-2 mb-2">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <strong class="small">${a.title}</strong>
+                                <span class="text-muted small">${a.date}</span>
+                            </div>
+                            <p class="small mb-0 text-muted">${a.body}</p>
+                        </div>`
+                ).join('');
+            document.getElementById('dashAnnouncements').innerHTML = annHtml;
+
+            const examData = exams.map(e => {
+                const s = getStudentById(e.studentId);
+                const total = (e.math || 0) + (e.eng || 0) + (e.kisw || 0) + (e.science || 0) + (e.ss || 0) +
+                    (e.civics || 0) + (e.re || 0) + (e.voc || 0) + (e.ict || 0) + (e.extra || 0);
+                const avg = Math.round(total / 10);
+                const div = calculateDivision(avg);
+                return { name: s ? s.jina : 'Mwanafunzi', darasa: s ? s.darasa : '', avg, division: div.label,
+                    badgeClass: div.badge };
+            });
+            examData.sort((a, b) => b.avg - a.avg);
+            const topHtml = examData.length === 0 ?
+                '<p class="text-muted text-center small">Hakuna matokeo bado.</p>' :
+                examData.slice(0, 5).map((e, i) =>
+                    `<div class="d-flex justify-content-between align-items-center border-bottom py-1 small">
+                            <span>${i+1}. ${e.name}</span>
+                            <span><span class="badge-status ${e.badgeClass}">${e.division}</span> ${e.avg}%</span>
+                        </div>`
+                ).join('');
+            document.getElementById('dashTopStudents').innerHTML = topHtml;
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // RENDER: STUDENTS
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function renderStudents() {
+            const search = document.getElementById('studentSearch').value.toLowerCase();
+            const classFilter = document.getElementById('studentClassFilter').value;
+            let students = getStudents();
+
+            if (search) students = students.filter(s => s.jina.toLowerCase().includes(search) || s.mzazi.toLowerCase()
+                .includes(search));
+            if (classFilter) students = students.filter(s => s.darasa === classFilter);
+
+            document.getElementById('studentCount').textContent = students.length + ' wanafunzi';
+
+            const tbody = document.getElementById('studentTableBody');
+            if (students.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="text-muted text-center">Hakuna wanafunzi</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = students.map(s => {
+                const pct = getAttendancePercentage(s.id);
+                const badgeClass = pct >= 80 ? 'green' : pct >= 60 ? 'yellow' : 'red';
+                return `<tr>
+                            <td><span class="fw-semibold">${s.id}</span></td>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="avatar-sm">${s.jina.charAt(0)}</div>
+                                    ${s.jina}
+                                </div>
+                            </td>
+                            <td><span class="badge bg-soft-primary text-primary-custom">${s.darasa}</span></td>
+                            <td>${s.mzazi}</td>
+                            <td>${s.simu}</td>
+                            <td><span class="badge-status ${badgeClass}">${pct}%</span></td>
+                            <td class="text-end">
+                                <button class="btn btn-sm btn-outline-primary me-1" onclick="editStudent('${s.id}')"><i class="bi bi-pencil"></i></button>
+                                <button class="btn btn-sm btn-outline-danger" onclick="deleteStudent('${s.id}')"><i class="bi bi-trash"></i></button>
+                            </td>
+                        </tr>`;
+            }).join('');
+        }
+
+        function openStudentModal(data) {
+            const isEdit = !!data;
+            document.getElementById('studentModalTitle').textContent = isEdit ? 'Hariri Mwanafunzi' : 'Mwongeze Mwanafunzi';
+            const s = data || { id: '', jina: '', jinsia: 'M', tarehe: '', darasa: 'Darasa 1', mzazi: '', simu: '',
+                anwani: '', password: '1234' };
+            document.getElementById('editStudentId').value = s.id;
+            document.getElementById('sId').value = s.id;
+            document.getElementById('sName').value = s.jina;
+            document.getElementById('sGender').value = s.jinsia;
+            document.getElementById('sDob').value = s.tarehe;
+            document.getElementById('sClass').value = s.darasa;
+            document.getElementById('sParent').value = s.mzazi;
+            document.getElementById('sPhone').value = s.simu;
+            document.getElementById('sAddress').value = s.anwani || '';
+            document.getElementById('sPassword').value = s.password || '1234';
+            new bootstrap.Modal(document.getElementById('studentModal')).show();
+        }
+
+        function editStudent(id) {
+            const s = getStudentById(id);
+            if (s) openStudentModal(s);
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // SAVE STUDENT (IMEREPEHEWA - inaunda mtihani na ada kiotomatiki)
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function saveStudent() {
+            const oldId = document.getElementById('editStudentId').value;
+            const newId = document.getElementById('sId').value.trim();
+            const jina = document.getElementById('sName').value.trim();
+            const jinsia = document.getElementById('sGender').value;
+            const tarehe = document.getElementById('sDob').value;
+            const darasa = document.getElementById('sClass').value;
+            const mzazi = document.getElementById('sParent').value.trim();
+            const simu = document.getElementById('sPhone').value.trim();
+            const anwani = document.getElementById('sAddress').value.trim();
+            const password = document.getElementById('sPassword').value.trim() || '1234';
+
+            if (!newId) return alert('Tafadhali weka ID ya mwanafunzi.');
+            if (!jina || !mzazi || !simu) return alert('Tafadhali jaza sehemu zote muhimu.');
+
+            let students = getStudents();
+
+            const duplicate = students.find(s => s.id === newId && s.id !== oldId);
+            if (duplicate) {
+                alert(`ID "${newId}" tayari inatumiwa na mwanafunzi mwingine. Tafadhali chagua ID nyingine.`);
+                return;
+            }
+
+            if (oldId) {
+                const idx = students.findIndex(s => s.id === oldId);
+                if (idx > -1) {
+                    students[idx] = { ...students[idx], id: newId, jina, jinsia, tarehe, darasa, mzazi, simu, anwani,
+                        password };
+                }
+                let att = getAttendance();
+                att = att.map(a => a.studentId === oldId ? { ...a, studentId: newId } : a);
+                setAttendance(att);
+                let exams = getExams();
+                exams = exams.map(e => e.studentId === oldId ? { ...e, studentId: newId } : e);
+                setExams(exams);
+                let fees = getFees();
+                fees = fees.map(f => f.studentId === oldId ? { ...f, studentId: newId } : f);
+                setFees(fees);
+            } else {
+                const newStudent = { id: newId, jina, jinsia, tarehe, darasa, mzazi, simu, anwani, password };
+                students.push(newStudent);
+
+                // 🔥 ONGEZA HAPA: Unda rekodi ya mtihani kwa mwanafunzi mpya
+                let exams = getExams();
+                // Hakikisha hakuna rekodi ya mtihani iliyopo kwa ID hii
+                if (!exams.some(e => e.studentId === newId)) {
+                    exams.push({
+                        id: generateId('E'),
+                        studentId: newId,
+                        darasa: darasa,
+                        math: 0, eng: 0, kisw: 0, science: 0, ss: 0,
+                        civics: 0, re: 0, voc: 0, ict: 0, extra: 0
+                    });
+                    setExams(exams);
+                }
+
+                // Unda rekodi ya ada ikiwa haipo
+                let fees = getFees();
+                if (!fees.some(f => f.studentId === newId)) {
+                    fees.push({
+                        id: generateId('F'),
+                        studentId: newId,
+                        feeRequired: 500000,
+                        amountPaid: 0,
+                        paymentDate: '',
+                        reference: ''
+                    });
+                    setFees(fees);
+                }
+            }
+
+            setStudents(students);
+            bootstrap.Modal.getInstance(document.getElementById('studentModal')).hide();
+            renderStudents();
+            renderDashboard();
+            if (currentPage === 'parent') renderParentView();
+        }
+
+        function deleteStudent(id) {
+            if (!confirm('Una hakika unataka kumfuta mwanafunzi huyu?')) return;
+            let students = getStudents().filter(s => s.id !== id);
+            setStudents(students);
+            let fees = getFees().filter(f => f.studentId !== id);
+            setFees(fees);
+            let exams = getExams().filter(e => e.studentId !== id);
+            setExams(exams);
+            let att = getAttendance().filter(a => a.studentId !== id);
+            setAttendance(att);
+            renderStudents();
+            renderDashboard();
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // RENDER: ATTENDANCE
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function renderAttendance() {
+            const date = document.getElementById('attDate').value || getToday();
+            const cls = document.getElementById('attClass').value;
+            document.getElementById('attDate').value = date;
+
+            let students = getStudents();
+            if (cls) students = students.filter(s => s.darasa === cls);
+
+            document.getElementById('attCount').textContent = students.length + ' wanafunzi';
+
+            const tbody = document.getElementById('attendanceTableBody');
+            if (students.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="3" class="text-muted text-center">Hakuna wanafunzi katika darasa hili</td></tr>`;
+                return;
+            }
+
+            const attRecs = getAttendance();
+            tbody.innerHTML = students.map(s => {
+                const rec = attRecs.find(a => a.studentId === s.id && a.tarehe === date);
+                const val = rec ? (parseInt(rec.asilimia) || 0) : 0;
+                return `<tr>
+                            <td><strong>${s.jina}</strong></td>
+                            <td>${s.darasa}</td>
+                            <td>
+                                <select class="attendance-select" data-student="${s.id}" data-date="${date}">
+                                    <option value="100" ${val===100?'selected':''}>100%</option>
+                                    <option value="90" ${val===90?'selected':''}>90%</option>
+                                    <option value="80" ${val===80?'selected':''}>80%</option>
+                                    <option value="70" ${val===70?'selected':''}>70%</option>
+                                    <option value="60" ${val===60?'selected':''}>60%</option>
+                                    <option value="50" ${val===50?'selected':''}>50%</option>
+                                    <option value="0" ${val===0?'selected':''}>0%</option>
+                                </select>
+                            </td>
+                        </tr>`;
+            }).join('');
+        }
+
+        function loadAttendance() {
+            renderAttendance();
+        }
+
+        function saveAttendance() {
+            const date = document.getElementById('attDate').value || getToday();
+            const selects = document.querySelectorAll('.attendance-select');
+            const existing = getAttendance().filter(a => a.tarehe !== date);
+            const newAtt = [...existing];
+
+            selects.forEach(sel => {
+                const studentId = sel.dataset.student;
+                const asilimia = parseInt(sel.value) || 0;
+                newAtt.push({ id: generateId('A'), studentId, tarehe: date, asilimia });
+            });
+
+            setAttendance(newAtt);
+            alert('✅ Mahudhurio yamehifadhiwa!');
+            renderAttendance();
+            renderDashboard();
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // RENDER: EXAMS (with 10 subjects)
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function renderExams() {
+            const classFilter = document.getElementById('examClassFilter').value;
+            let exams = getExams();
+            if (classFilter) exams = exams.filter(e => e.darasa === classFilter);
+
+            const enriched = exams.map(e => {
+                const s = getStudentById(e.studentId);
+                const total = (e.math || 0) + (e.eng || 0) + (e.kisw || 0) + (e.science || 0) + (e.ss || 0) +
+                    (e.civics || 0) + (e.re || 0) + (e.voc || 0) + (e.ict || 0) + (e.extra || 0);
+                const avg = Math.round(total / 10);
+                const div = calculateDivision(avg);
+                return { ...e, studentName: s ? s.jina : 'Mwanafunzi', total, avg, division: div.label,
+                    badgeClass: div.badge };
+            });
+
+            enriched.sort((a, b) => b.total - a.total);
+            enriched.forEach((e, i) => e.position = i + 1);
+
+            document.getElementById('examCount').textContent = enriched.length + ' rekodi';
+
+            const tbody = document.getElementById('examTableBody');
+            if (enriched.length === 0) {
+                tbody.innerHTML =
+                `<tr><td colspan="16" class="text-muted text-center">Hakuna matokeo</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = enriched.map(e => `
+                        <tr>
+                            <td><strong>${e.studentName}</strong></td>
+                            <td><span class="badge bg-soft-primary text-primary-custom">${e.darasa}</span></td>
+                            <td>${e.math}</td>
+                            <td>${e.eng}</td>
+                            <td>${e.kisw}</td>
+                            <td>${e.science}</td>
+                            <td>${e.ss}</td>
+                            <td>${e.civics || 0}</td>
+                            <td>${e.re}</td>
+                            <td>${e.voc || 0}</td>
+                            <td>${e.ict || 0}</td>
+                            <td><strong>${e.total}</strong></td>
+                            <td>${e.avg}</td>
+                            <td><span class="badge-status ${e.badgeClass}">${e.division}</span></td>
+                            <td>${e.position}</td>
+                            <td class="text-end">
+                                <button class="btn btn-sm btn-outline-primary me-1" onclick="editExam('${e.id}')"><i class="bi bi-pencil"></i></button>
+                                <button class="btn btn-sm btn-outline-danger" onclick="deleteExam('${e.id}')"><i class="bi bi-trash"></i></button>
+                            </td>
+                        </tr>
+                    `).join('');
+
+            populateStudentSelect('eStudent', (sel) => {
+                sel.addEventListener('change', function() {
+                    const s = getStudentById(this.value);
+                    document.getElementById('eClass').value = s ? s.darasa : '';
+                });
+            });
+        }
+
+        function openExamModal(data) {
+            const isEdit = !!data;
+            document.getElementById('examModalTitle').textContent = isEdit ? 'Hariri Matokeo' : 'Ongeza Matokeo';
+            const e = data || { id: '', studentId: '', darasa: '', math: 0, eng: 0, kisw: 0, science: 0, ss: 0,
+                civics: 0, re: 0, voc: 0, ict: 0, extra: 0 };
+            document.getElementById('editExamId').value = e.id;
+            document.getElementById('eMath').value = e.math || 0;
+            document.getElementById('eEng').value = e.eng || 0;
+            document.getElementById('eKisw').value = e.kisw || 0;
+            document.getElementById('eScience').value = e.science || 0;
+            document.getElementById('eSS').value = e.ss || 0;
+            document.getElementById('eCivics').value = e.civics || 0;
+            document.getElementById('eRE').value = e.re || 0;
+            document.getElementById('eVoc').value = e.voc || 0;
+            document.getElementById('eICT').value = e.ict || 0;
+            document.getElementById('eExtra').value = e.extra || 0;
+            populateStudentSelect('eStudent', (sel) => {
+                sel.value = e.studentId || '';
+                const s = getStudentById(sel.value);
+                document.getElementById('eClass').value = s ? s.darasa : '';
+                sel.addEventListener('change', function() {
+                    const st = getStudentById(this.value);
+                    document.getElementById('eClass').value = st ? st.darasa : '';
+                });
+            });
+            new bootstrap.Modal(document.getElementById('examModal')).show();
+        }
+
+        function editExam(id) {
+            const e = getExams().find(x => x.id === id);
+            if (e) openExamModal(e);
+        }
+
+        function saveExam() {
+            const id = document.getElementById('editExamId').value;
+            const studentId = document.getElementById('eStudent').value;
+            const darasa = document.getElementById('eClass').value;
+            const math = parseFloat(document.getElementById('eMath').value) || 0;
+            const eng = parseFloat(document.getElementById('eEng').value) || 0;
+            const kisw = parseFloat(document.getElementById('eKisw').value) || 0;
+            const science = parseFloat(document.getElementById('eScience').value) || 0;
+            const ss = parseFloat(document.getElementById('eSS').value) || 0;
+            const civics = parseFloat(document.getElementById('eCivics').value) || 0;
+            const re = parseFloat(document.getElementById('eRE').value) || 0;
+            const voc = parseFloat(document.getElementById('eVoc').value) || 0;
+            const ict = parseFloat(document.getElementById('eICT').value) || 0;
+            const extra = parseFloat(document.getElementById('eExtra').value) || 0;
+
+            if (!studentId) return alert('Tafadhali chagua mwanafunzi.');
+
+            let exams = getExams();
+            const obj = { id: id || generateId('E'), studentId, darasa, math, eng, kisw, science, ss, civics, re, voc, ict,
+                extra };
+            if (id) {
+                const idx = exams.findIndex(x => x.id === id);
+                if (idx > -1) exams[idx] = obj;
+            } else {
+                exams.push(obj);
+            }
+            setExams(exams);
+            bootstrap.Modal.getInstance(document.getElementById('examModal')).hide();
+            renderExams();
+            renderDashboard();
+        }
+
+        function deleteExam(id) {
+            if (!confirm('Futa matokeo haya?')) return;
+            let exams = getExams().filter(e => e.id !== id);
+            setExams(exams);
+            renderExams();
+            renderDashboard();
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // RENDER: FEES
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function renderFees() {
+            const classFilter = document.getElementById('feeClassFilter').value;
+            let fees = getFees();
+            if (classFilter) {
+                const studentsInClass = getStudents().filter(s => s.darasa === classFilter).map(s => s.id);
+                fees = fees.filter(f => studentsInClass.includes(f.studentId));
+            }
+
+            const allFees = getFees();
+            const totalReq = allFees.reduce((sum, f) => sum + f.feeRequired, 0);
+            const totalPaid = allFees.reduce((sum, f) => sum + f.amountPaid, 0);
+            const totalBalance = totalReq - totalPaid;
+
+            document.getElementById('feeSummary').innerHTML = `
+                        <div class="fee-stats-grid">
+                            <div class="fee-stat-card">
+                                <h4>💰 Inadaiwa Jumla</h4>
+                                <div class="num">${formatCurrency(totalReq)}</div>
+                            </div>
+                            <div class="fee-stat-card">
+                                <h4>💳 Imelipwa Jumla</h4>
+                                <div class="num positive">${formatCurrency(totalPaid)}</div>
+                            </div>
+                            <div class="fee-stat-card">
+                                <h4>📊 Salio Jumla</h4>
+                                <div class="num ${totalBalance > 0 ? 'negative' : 'positive'}">${formatCurrency(totalBalance)}</div>
+                            </div>
+                        </div>
+                    `;
+
+            document.getElementById('feeCount').textContent = fees.length + ' rekodi';
+
+            const tbody = document.getElementById('feeTableBody');
+            if (fees.length === 0) {
+                tbody.innerHTML =
+                `<tr><td colspan="8" class="text-muted text-center">Hakuna rekodi za ada</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = fees.map(f => {
+                const s = getStudentById(f.studentId);
+                const balance = f.feeRequired - f.amountPaid;
+                return `<tr>
+                            <td><strong>${s ? s.jina : 'Mwanafunzi'}</strong></td>
+                            <td>${s ? s.darasa : ''}</td>
+                            <td>${formatCurrency(f.feeRequired)}</td>
+                            <td>${formatCurrency(f.amountPaid)}</td>
+                            <td class="${balance > 0 ? 'text-danger fw-bold' : 'text-success'}">${formatCurrency(balance)}</td>
+                            <td>${f.paymentDate || '-'}</td>
+                            <td>${f.reference || '-'}</td>
+                            <td class="text-end">
+                                <button class="btn btn-sm btn-outline-primary me-1" onclick="editFee('${f.id}')"><i class="bi bi-pencil"></i></button>
+                                <button class="btn btn-sm btn-outline-danger" onclick="deleteFee('${f.id}')"><i class="bi bi-trash"></i></button>
+                            </td>
+                        </tr>`;
+            }).join('');
+
+            populateStudentSelect('fStudent');
+        }
+
+        function openFeeModal(data) {
+            const isEdit = !!data;
+            document.getElementById('feeModalTitle').textContent = isEdit ? 'Hariri Ada' : 'Rekodi Malipo';
+            const f = data || { id: '', studentId: '', feeRequired: 500000, amountPaid: 0, paymentDate: getToday(),
+                reference: '' };
+            document.getElementById('editFeeId').value = f.id;
+            document.getElementById('fRequired').value = f.feeRequired || 500000;
+            document.getElementById('fPaid').value = f.amountPaid || 0;
+            document.getElementById('fDate').value = f.paymentDate || getToday();
+            document.getElementById('fRef').value = f.reference || '';
+            populateStudentSelect('fStudent', (sel) => { sel.value = f.studentId || ''; });
+            new bootstrap.Modal(document.getElementById('feeModal')).show();
+        }
+
+        function editFee(id) {
+            const f = getFees().find(x => x.id === id);
+            if (f) openFeeModal(f);
+        }
+
+        function saveFee() {
+            const id = document.getElementById('editFeeId').value;
+            const studentId = document.getElementById('fStudent').value;
+            const feeRequired = parseFloat(document.getElementById('fRequired').value) || 0;
+            const amountPaid = parseFloat(document.getElementById('fPaid').value) || 0;
+            const paymentDate = document.getElementById('fDate').value || getToday();
+            const reference = document.getElementById('fRef').value.trim();
+
+            if (!studentId) return alert('Tafadhali chagua mwanafunzi.');
+
+            let fees = getFees();
+            const obj = { id: id || generateId('F'), studentId, feeRequired, amountPaid, paymentDate, reference };
+            if (id) {
+                const idx = fees.findIndex(x => x.id === id);
+                if (idx > -1) fees[idx] = obj;
+            } else {
+                fees.push(obj);
+            }
+            setFees(fees);
+            bootstrap.Modal.getInstance(document.getElementById('feeModal')).hide();
+            renderFees();
+            renderDashboard();
+        }
+
+        function deleteFee(id) {
+            if (!confirm('Futa rekodi ya ada?')) return;
+            let fees = getFees().filter(f => f.id !== id);
+            setFees(fees);
+            renderFees();
+            renderDashboard();
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // RENDER: ANNOUNCEMENTS
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function renderAnnouncements() {
+            const announcements = getAnnouncements();
+            const container = document.getElementById('announceList');
+
+            if (announcements.length === 0) {
+                container.innerHTML = '<p class="text-muted text-center">Hakuna matangazo bado.</p>';
+                return;
+            }
+
+            const sorted = announcements.slice().sort((a, b) => new Date(b.date) - new Date(a.date));
+            const typeMap = { Meeting: 'Mkutano', Holiday: 'Likizo', Examination: 'Mtihani', Event: 'Tukio' };
+
+            container.innerHTML = sorted.map(a => `
+                        <div class="announcement-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="ann-title">${a.title}</span>
+                                <span class="ann-meta">${a.date} • ${typeMap[a.type] || a.type}</span>
+                            </div>
+                            <p class="ann-body">${a.body}</p>
+                            <div class="mt-2">
+                                <button class="btn btn-sm btn-outline-primary me-1" onclick="editAnnouncement('${a.id}')"><i class="bi bi-pencil"></i></button>
+                                <button class="btn btn-sm btn-outline-danger" onclick="deleteAnnouncement('${a.id}')"><i class="bi bi-trash"></i></button>
+                            </div>
+                        </div>
+                    `).join('');
+        }
+
+        function openAnnouncementModal(data) {
+            const isEdit = !!data;
+            document.getElementById('announcementModalTitle').textContent = isEdit ? 'Hariri Tangazo' : 'Tangazo Jipya';
+            const a = data || { id: '', title: '', body: '', date: getToday(), type: 'Meeting' };
+            document.getElementById('editAnnouncementId').value = a.id;
+            document.getElementById('aTitle').value = a.title;
+            document.getElementById('aBody').value = a.body;
+            document.getElementById('aDate').value = a.date || getToday();
+            document.getElementById('aType').value = a.type || 'Meeting';
+            new bootstrap.Modal(document.getElementById('announcementModal')).show();
+        }
+
+        function editAnnouncement(id) {
+            const a = getAnnouncements().find(x => x.id === id);
+            if (a) openAnnouncementModal(a);
+        }
+
+        function saveAnnouncement() {
+            const id = document.getElementById('editAnnouncementId').value;
+            const title = document.getElementById('aTitle').value.trim();
+            const body = document.getElementById('aBody').value.trim();
+            const date = document.getElementById('aDate').value || getToday();
+            const type = document.getElementById('aType').value;
+
+            if (!title) return alert('Tafadhali weka kichwa cha tangazo.');
+
+            let announcements = getAnnouncements();
+            const obj = { id: id || generateId('AN'), title, body, date, type };
+            if (id) {
+                const idx = announcements.findIndex(x => x.id === id);
+                if (idx > -1) announcements[idx] = obj;
+            } else {
+                announcements.push(obj);
+            }
+            setAnnouncements(announcements);
+            bootstrap.Modal.getInstance(document.getElementById('announcementModal')).hide();
+            renderAnnouncements();
+            renderDashboard();
+        }
+
+        function deleteAnnouncement(id) {
+            if (!confirm('Futa tangazo hili?')) return;
+            let announcements = getAnnouncements().filter(a => a.id !== id);
+            setAnnouncements(announcements);
+            renderAnnouncements();
+            renderDashboard();
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // RENDER: PARENT VIEW
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function renderParentView() {
+            const container = document.getElementById('parentInfo');
+            let studentId = currentUser && currentUser.role === 'parent' ? currentUser.studentId : null;
+            let student = studentId ? getStudentById(studentId) : null;
+            if (!student) {
+                const students = getStudents();
+                if (students.length > 0) student = students[0];
+            }
+
+            if (!student) {
+                container.innerHTML =
+                    '<div class="alert alert-info">Hakuna mwanafunzi aliyepatikana. Tafadhali wasiliana na msimamizi.</div>';
+                return;
+            }
+
+            const pct = getAttendancePercentage(student.id);
+            const exam = getExams().find(e => e.studentId === student.id);
+            const fee = getFees().find(f => f.studentId === student.id);
+
+            let examHtml = 'Hajafanya mtihani';
+            let totalMarks = 0;
+            let avgMarks = 0;
+            let divLabel = '-';
+            let divBadge = '';
+
+            if (exam) {
+                totalMarks = (exam.math || 0) + (exam.eng || 0) + (exam.kisw || 0) + (exam.science || 0) + (exam.ss || 0) +
+                    (exam.civics || 0) + (exam.re || 0) + (exam.voc || 0) + (exam.ict || 0) + (exam.extra || 0);
+                avgMarks = Math.round(totalMarks / 10);
+                const div = calculateDivision(avgMarks);
+                divLabel = div.label;
+                divBadge = div.badge;
+                examHtml =
+                    `Jumla: ${totalMarks}, Wastani: ${avgMarks}, Division: <span class="badge-status ${div.badge}">${div.label}</span>`;
+            }
+
+            let feeHtml = '';
+            if (fee) {
+                const balance = fee.feeRequired - fee.amountPaid;
+                feeHtml = `
+                    <div class="fee-summary-box">
+                        <p><strong>💰 School Fees</strong></p>
+                        <p><span class="total-fee">Inadaiwa: ${formatCurrency(fee.feeRequired)}</span></p>
+                        <p><span class="paid-fee">Imelipwa: ${formatCurrency(fee.amountPaid)}</span></p>
+                        <p><span class="${balance === 0 ? 'balance-fee zero' : 'balance-fee'}">Salio: ${formatCurrency(balance)}</span></p>
+                    </div>
+                `;
+            } else {
+                feeHtml = '<p class="text-muted">Hakuna rekodi ya ada.</p>';
+            }
+
+            container.innerHTML = `
+                <div class="parent-child-card">
+                    <div class="avatar-lg">${student.jina.charAt(0)}</div>
+                    <h6 class="fw-bold">${student.jina}</h6>
+                    <span class="badge bg-soft-primary text-primary-custom">${student.darasa}</span>
+                    <hr />
+                    <div class="text-start small">
+                        <div class="d-flex justify-content-between"><span>Mzazi:</span><span class="fw-semibold">${student.mzazi}</span></div>
+                        <div class="d-flex justify-content-between"><span>Simu:</span><span class="fw-semibold">${student.simu}</span></div>
+                        <div class="d-flex justify-content-between"><span>Anwani:</span><span class="fw-semibold">${student.anwani || '-'}</span></div>
+                    </div>
+                    <hr />
+                    <div class="row g-2 text-start">
+                        <div class="col-4">
+                            <div class="stat-card text-center p-2">
+                                <div class="number text-primary" style="font-size:20px;">${pct}%</div>
+                                <div class="label" style="font-size:11px;">Mahudhurio</div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="stat-card text-center p-2">
+                                <div class="number text-success" style="font-size:20px;">${exam ? avgMarks : '-'}</div>
+                                <div class="label" style="font-size:11px;">Wastani</div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="stat-card text-center p-2">
+                                <div class="number text-warning" style="font-size:20px;">${fee ? formatCurrency(fee.feeRequired - fee.amountPaid) : '-'}</div>
+                                <div class="label" style="font-size:11px;">Salio la Ada</div>
+                            </div>
+                        </div>
+                    </div>
+                    ${feeHtml}
+                    <div class="mt-2 text-start small">
+                        <strong>📝 Matokeo:</strong> ${examHtml}
+                    </div>
+                    <button class="btn btn-outline-primary btn-sm mt-2 w-100" onclick="viewSubjects('${student.id}')">
+                        <i class="bi bi-eye me-1"></i> Angalia Masomo Yote
+                    </button>
+                </div>
+            `;
+
+            // Announcements
+            const annContainer = document.getElementById('parentAnnouncements');
+            const announcements = getAnnouncements();
+            const sortedAnn = announcements.slice().sort((a, b) => new Date(b.date) - new Date(a.date));
+            if (sortedAnn.length === 0) {
+                annContainer.innerHTML = '<p class="text-muted text-center small">Hakuna matangazo bado.</p>';
+            } else {
+                annContainer.innerHTML = sortedAnn.slice(0, 4).map(a => `
+                        <div class="announcement-mini">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="mini-title">${a.title}</span>
+                                <span class="mini-meta">${a.date}</span>
+                            </div>
+                            <div class="mini-body">${a.body}</div>
+                        </div>
+                    `).join('');
+            }
+
+            // Top Students
+            const topContainer = document.getElementById('parentTopStudents');
+            const exams = getExams();
+            const examData = exams.map(e => {
+                const s = getStudentById(e.studentId);
+                const total = (e.math || 0) + (e.eng || 0) + (e.kisw || 0) + (e.science || 0) + (e.ss || 0) +
+                    (e.civics || 0) + (e.re || 0) + (e.voc || 0) + (e.ict || 0) + (e.extra || 0);
+                const avg = Math.round(total / 10);
+                const div = calculateDivision(avg);
+                return { name: s ? s.jina : 'Mwanafunzi', avg, division: div.label, badgeClass: div.badge };
+            });
+            examData.sort((a, b) => b.avg - a.avg);
+
+            if (examData.length === 0) {
+                topContainer.innerHTML = '<p class="text-muted text-center small">Hakuna matokeo bado.</p>';
+            } else {
+                topContainer.innerHTML = examData.slice(0, 5).map((e, i) => `
+                        <div class="top-student-row">
+                            <span class="rank">${i+1}</span>
+                            <span class="student-name">${e.name}</span>
+                            <span class="student-score">
+                                <span class="badge-status ${e.badgeClass}">${e.division}</span> ${e.avg}%
+                            </span>
+                        </div>
+                    `).join('');
+            }
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // HELPERS
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function populateStudentSelect(id, callback) {
+            const students = getStudents();
+            const sel = document.getElementById(id);
+            sel.innerHTML = students.map(s =>
+                `<option value="${s.id}">${s.jina} (${s.darasa})</option>`
+            ).join('');
+            if (callback) callback(sel);
+        }
+
+        function renderAll() {
+            if (currentUser && currentUser.role === 'admin') {
+                if (currentPage === 'dashboard') renderDashboard();
+                else if (currentPage === 'students') renderStudents();
+                else if (currentPage === 'attendance') renderAttendance();
+                else if (currentPage === 'exams') renderExams();
+                else if (currentPage === 'fees') renderFees();
+                else if (currentPage === 'announcements') renderAnnouncements();
+            } else if (currentUser && currentUser.role === 'parent') {
+                renderParentView();
+            }
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // INIT
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        initData();
+        document.getElementById('attDate').value = getToday();
+
+        populateStudentSelect('eStudent', (sel) => {
+            sel.addEventListener('change', function() {
+                const s = getStudentById(this.value);
+                document.getElementById('eClass').value = s ? s.darasa : '';
+            });
+        });
+        populateStudentSelect('fStudent');
+
+        // Onyesha login page
+        document.getElementById('loginPage').style.display = 'flex';
+        document.getElementById('mainContent').style.display = 'none';
+
+        // Weka placeholder default (admin)
+        setRole('admin');
+
+        console.log('🏫 Mfumo wa Shule umeanza vizuri!');
+        console.log('📌 Admin: ingia kwa barua pepe na neno siri la Firebase.');
+        console.log('📌 Mzazi: ingia kwa ID ya mwanafunzi (S001-S006) na neno siri lake (1234, 5678, ...)');
     </script>
 
 </body>
