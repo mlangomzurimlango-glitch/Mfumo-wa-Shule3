@@ -943,8 +943,8 @@
 
             <form id="loginForm" onsubmit="return handleLogin(event)">
                 <div class="mb-3">
-                    <label class="form-label fw-semibold">Barua pepe / Jina la Mtumiaji</label>
-                    <input type="text" class="form-control" id="loginUsername" placeholder="Weka barua pepe au jina" required />
+                    <label class="form-label fw-semibold">Jina la Mtumiaji / ID</label>
+                    <input type="text" class="form-control" id="loginUsername" placeholder="Weka barua pepe au ID" required />
                 </div>
                 <div class="mb-3">
                     <label class="form-label fw-semibold">Neno la Siri</label>
@@ -1658,7 +1658,7 @@
         const db = firebase.firestore();
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        // DATA LAYER (localStorage bado kwa ajili ya demo, lakini baadaye tutahamisha Firestore)
+        // DATA LAYER (localStorage)
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
         function getData(key, fallback) {
@@ -1817,7 +1817,6 @@
                         body: 'Mtihani utafanyika Oktoba 15-20, 2026.', date: '2026-08-17', type: 'Examination' },
                 ]);
             }
-            // USER: Sasa hatuongezi admin default, tutatumia Firebase Auth
         }
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -1829,86 +1828,108 @@
         let currentPage = 'dashboard';
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        // LOGIN / LOGOUT
+        // SET ROLE - Inaweka placeholder kulingana na jukumu
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
         function setRole(role) {
             selectedRole = role;
-            document.querySelectorAll('.role-toggle .btn').forEach(b => b.classList.toggle('active', b.dataset.role ===
-            role));
-            const hint = document.getElementById('loginHint');
+            document.querySelectorAll('.role-toggle .btn').forEach(b => b.classList.toggle('active', b.dataset.role === role));
+            const usernameInput = document.getElementById('loginUsername');
+            const passwordInput = document.getElementById('loginPassword');
+
             if (role === 'admin') {
-                document.getElementById('loginUsername').value = '';
-                document.getElementById('loginPassword').value = '';
-                if (hint) hint.textContent = 'Ingia na barua pepe na neno siri lako la Firebase.';
+                usernameInput.placeholder = 'Weka barua pepe';
+                passwordInput.placeholder = 'Weka neno siri';
+                usernameInput.value = '';
+                passwordInput.value = '';
             } else {
-                document.getElementById('loginUsername').value = '';
-                document.getElementById('loginPassword').value = '';
-                if (hint) hint.textContent = 'Mzazi: ingiza barua pepe na neno siri.';
+                usernameInput.placeholder = 'Weka ID ya mwanafunzi (mfano S001)';
+                passwordInput.placeholder = 'Weka neno siri la mwanafunzi';
+                usernameInput.value = '';
+                passwordInput.value = '';
             }
         }
 
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // LOGIN / LOGOUT
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
         function handleLogin(e) {
             e.preventDefault();
-            const email = document.getElementById('loginUsername').value.trim();
+            const username = document.getElementById('loginUsername').value.trim();
             const password = document.getElementById('loginPassword').value.trim();
-
             const btn = document.getElementById('loginBtn');
             btn.disabled = true;
             btn.innerHTML = '⏳ Inaingia...';
 
-            // 🔥 LOGIN WITH FIREBASE AUTH
-            auth.signInWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    const user = userCredential.user;
-                    // 🔥 SEARCH USER IN FIRESTORE BY EMAIL (NOT UID)
-                    return db.collection('users').where('email', '==', user.email).get()
-                        .then((querySnapshot) => {
-                            if (!querySnapshot.empty) {
-                                // If user exists in Firestore, use that data
-                                const doc = querySnapshot.docs[0];
-                                const userData = doc.data();
-                                currentUser = {
-                                    role: userData.role || 'admin',
-                                    name: userData.fullName || 'Msimamizi',
-                                    uid: userData.uid || user.uid,
-                                    email: user.email
-                                };
-                                showApp();
-                            } else {
-                                // 🔥 IF NO USER IN FIRESTORE, USE DEFAULTS
-                                console.warn('Hakuna data ya mtumiaji Firestore, tunatumia defaults');
-                                currentUser = {
-                                    role: 'admin',
-                                    name: 'Msimamizi',
-                                    uid: user.uid,
-                                    email: user.email
-                                };
-                                showApp();
-                            }
-                        });
-                })
-                .catch((error) => {
-                    alert('❌ Kuingia kumeshindwa: ' + error.message);
-                })
-                .finally(() => {
+            if (selectedRole === 'admin') {
+                // 🔥 NJIA YA ADMIN: Firebase Authentication
+                auth.signInWithEmailAndPassword(username, password)
+                    .then((userCredential) => {
+                        const user = userCredential.user;
+                        return db.collection('users').where('email', '==', user.email).get()
+                            .then((querySnapshot) => {
+                                if (!querySnapshot.empty) {
+                                    const doc = querySnapshot.docs[0];
+                                    const userData = doc.data();
+                                    currentUser = {
+                                        role: userData.role || 'admin',
+                                        name: userData.fullName || 'Msimamizi',
+                                        uid: userData.uid || user.uid,
+                                        email: user.email
+                                    };
+                                    showApp();
+                                } else {
+                                    // Kama hakuna data Firestore, tumia defaults
+                                    currentUser = {
+                                        role: 'admin',
+                                        name: 'Msimamizi',
+                                        uid: user.uid,
+                                        email: user.email
+                                    };
+                                    showApp();
+                                }
+                            });
+                    })
+                    .catch((error) => {
+                        alert('❌ Kuingia kwa Admin kumeshindwa: ' + error.message);
+                    })
+                    .finally(() => {
+                        btn.disabled = false;
+                        btn.innerHTML = '🔐 Ingia';
+                    });
+            } else if (selectedRole === 'parent') {
+                // 🏫 NJIA YA MZAZI: localStorage (kama zamani)
+                const students = getStudents();
+                const found = students.find(s => s.id === username && s.password === password);
+                if (found) {
+                    currentUser = {
+                        role: 'parent',
+                        studentId: found.id,
+                        name: found.mzazi || found.jina
+                    };
+                    showApp();
                     btn.disabled = false;
                     btn.innerHTML = '🔐 Ingia';
-                });
+                } else {
+                    alert('❌ Namba ya mwanafunzi au neno siri si sahihi.');
+                    btn.disabled = false;
+                    btn.innerHTML = '🔐 Ingia';
+                }
+            }
 
             return false;
         }
 
         function handleLogout() {
-            auth.signOut().then(() => {
-                currentUser = null;
-                document.getElementById('loginPage').style.display = 'flex';
-                document.getElementById('mainContent').style.display = 'none';
-                document.getElementById('sidebar').classList.remove('open');
-                document.getElementById('sidebarOverlay').classList.remove('active');
-            }).catch((error) => {
-                console.error('Logout error:', error);
-            });
+            if (currentUser && currentUser.role === 'admin') {
+                auth.signOut().catch(err => console.error('Logout error:', err));
+            }
+            currentUser = null;
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('mainContent').style.display = 'none';
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('sidebarOverlay').classList.remove('active');
         }
 
         function showApp() {
@@ -1947,7 +1968,6 @@
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
         function openChangePasswordModal() {
-            // Hii inabaki kwa ajili ya kuweka jina mpya, lakini password tutabadilisha Firebase
             const users = getUsers();
             const admin = users.find(u => u.role === 'admin');
             if (admin) {
@@ -1960,8 +1980,6 @@
         }
 
         function savePasswordChange() {
-            // Kwa sasa tunatumia localStorage, lakini baadaye tutatumia Firebase Auth updatePassword
-            // Hapa tunabadilisha tu kwenye localStorage
             const newUsername = document.getElementById('newUsername').value.trim();
             const newFullName = document.getElementById('newFullName').value.trim();
             const newPassword = document.getElementById('newPassword').value.trim();
@@ -2879,11 +2897,16 @@
         });
         populateStudentSelect('fStudent');
 
+        // Onyesha login page
         document.getElementById('loginPage').style.display = 'flex';
         document.getElementById('mainContent').style.display = 'none';
 
+        // Weka placeholder default (admin)
+        setRole('admin');
+
         console.log('🏫 Mfumo wa Shule umeanza vizuri!');
-        console.log('📌 Ingia kwa barua pepe na neno siri lako la Firebase.');
+        console.log('📌 Admin: ingia kwa barua pepe na neno siri la Firebase.');
+        console.log('📌 Mzazi: ingia kwa ID ya mwanafunzi (S001-S005) na neno siri lake (1234, 5678, ...)');
     </script>
 
 </body>
